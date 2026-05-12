@@ -31,11 +31,35 @@ function Dashboard() {
             title: "Entertainment News",
             description: "Latest celebrity gossip and movie releases.",
             image: "https://via.placeholder.com/300x180"
-        }
-    ];   
+        },
+
+        {   
+            title: "Education News",
+            description: "Latest education policies.",
+            image: "https://via.placeholder.com/300x180" 
+        },
+
+        {
+            title: "Health News",
+            description: "Latest health and medical updates.",
+            image: "https://via.placeholder.com/300x180"
+        },
+
+        {
+            title: "Science News",
+            description: "Latest scientific discoveries and research.",
+            image: "https://via.placeholder.com/300x180"
+        },
+
+        {
+            title: "Investment and Stock Market News",
+            description: "Latest updates in investment and stock market.",
+            image: "https://via.placeholder.com/300x180"
+        },
+    ];
     return(
         <div className={`dashboard ${isDarkMode ? 'dark-mode' : 'light-mode'}`}>
-            <h1 classname= "header"> News Dashboard</h1>
+            <h1 classname= "header"> Geosphere 🌏 </h1>
             <div className="topbar">
                 <h3>Welcome to the News Dashboard 👋</h3>
                 
@@ -55,6 +79,10 @@ function Dashboard() {
                 <button>Sports</button>
                 <button>Business</button>
                 <button>Entertainment</button>
+                <button>Education</button>
+                <button>Health</button>
+                <button>Science</button>
+                <button>Investment and Stock Market</button>
             </div>
             <div className="cards-container">
                 {news.map((item, index) => (

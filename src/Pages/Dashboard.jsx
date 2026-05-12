@@ -1,4 +1,7 @@
-import "./Dashboard.css";
+
+import React, {useEffect,useState} from "react";
+import {Link} from "react-router-dom";
+
 
 function Dashboard() {
     const news= [
@@ -29,13 +32,15 @@ function Dashboard() {
             <div className="topbar">
                 <h3>Welcome to the News Dashboard 👋</h3>
                 <div><button className="mode-btn">🌙Dark Mode</button>
-                <button className="logout-btn">Logout</button></div>
-                </div>
+                <Link to="/"><button className="logout-btn">Logout</button></Link>
+             </div>
+             </div>
                 <div className="search-section">
                     <input type="text" placeholder="Search news..."/>
                     <button>Search🔍</button>
                 
-            </div>
+                </div>
+                
             <div className="categories">
                 <button>Technology</button>
                 <button>Sports</button>

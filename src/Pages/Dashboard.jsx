@@ -4,7 +4,13 @@ import {Link} from "react-router-dom";
 import "./Dashboard.css";
 
 
+
+
 function Dashboard() {
+    const [isDarkMode, setIsDarkMode] = useState(false);
+    const toggleMode = () => {
+        setIsDarkMode(!isDarkMode);
+    };
     const news= [
         {
             title: "Technology News",
@@ -28,11 +34,13 @@ function Dashboard() {
         }
     ];   
     return(
-        <div className="dashboard">
+        <div className={`dashboard ${isDarkMode ? 'dark-mode' : 'light-mode'}`}>
             <h1 classname= "header"> News Dashboard</h1>
             <div className="topbar">
                 <h3>Welcome to the News Dashboard 👋</h3>
-                <div><button className="mode-btn">🌙Dark Mode</button>
+                
+                <div className="topbar-actions">
+                    <button className="mode-btn" onClick={toggleMode}>{isDarkMode ? '☀️Light Mode' : '🌙Dark Mode'}</button>
                 <Link to="/"><button className="logout-btn">Logout</button></Link>
              </div>
              </div>

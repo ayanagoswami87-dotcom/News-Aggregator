@@ -2,6 +2,11 @@
 
 import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import Dashboard from "./Pages/Dashboard";
+function App() {
+return(<Dashboard />);
+}
+
 
 function Login() {
   const navigate = useNavigate();
@@ -167,6 +172,7 @@ function Signup() {
 
 function App() {
   return (
+ 
     <Router>
       <Routes>
         <Route path="/" element={<Login />} />

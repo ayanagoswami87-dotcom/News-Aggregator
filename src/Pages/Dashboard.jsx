@@ -1,6 +1,7 @@
 
 import React, {useEffect,useState} from "react";
 import {Link} from "react-router-dom";
+import "./Dashboard.css";
 
 
 function Dashboard() {
@@ -40,7 +41,7 @@ function Dashboard() {
                     <button>Search🔍</button>
                 
                 </div>
-                
+
             <div className="categories">
                 <button>Technology</button>
                 <button>Sports</button>

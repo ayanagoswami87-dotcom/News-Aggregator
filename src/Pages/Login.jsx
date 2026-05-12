@@ -6,6 +6,7 @@ function Login() {
 
   const handleLogin = (e) => {
     e.preventDefault();
+    navigate("/personalization");
 
     if (email === "" || password === "") {
       alert("Please fill all fields");

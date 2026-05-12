@@ -3,6 +3,8 @@
 import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 
+import Personalization from "./Pages/personalization";
+
 function Login() {
   const navigate = useNavigate();
 
@@ -99,7 +101,7 @@ function Signup() {
 
     alert("Signup Successful");
 
-    navigate("/");
+    navigate("/personalization");
   };
 
   return (
@@ -171,9 +173,13 @@ function App() {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/personalization" element={<Personalization />} />
       </Routes>
     </Router>
   );
 }
+
+
+
 
 export default App;

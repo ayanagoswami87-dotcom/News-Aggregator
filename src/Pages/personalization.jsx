@@ -19,8 +19,8 @@ const Personalization = () => {
         console.log(preferences);
         alert("Preferences Saved!");
 
-        window.location.href = "/index";
-        navigate("/dashboard");
+        window.location.href = "/dashboard";
+        
     };
     return (
         <div>

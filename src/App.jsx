@@ -2,6 +2,8 @@
 
 import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import Dashboard from "./Pages/Dashboard";
+
 
 import Personalization from "./Pages/personalization";
 
@@ -102,6 +104,7 @@ function Signup() {
     alert("Signup Successful");
 
     navigate("/personalization");
+    
   };
 
   return (
@@ -169,10 +172,12 @@ function Signup() {
 
 function App() {
   return (
+ 
     <Router>
       <Routes>
-        <Route path="/" element={<Login />} />
+        <Route path="/" element={<Login/>} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/dashboard" element={<Dashboard/>}/>
         <Route path="/personalization" element={<Personalization />} />
       </Routes>
     </Router>

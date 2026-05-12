@@ -5,6 +5,8 @@ import { useState } from "react";
 import Dashboard from "./Pages/Dashboard";
 
 
+import Personalization from "./Pages/personalization";
+
 function Login() {
   const navigate = useNavigate();
 
@@ -101,7 +103,8 @@ function Signup() {
 
     alert("Signup Successful");
 
-    navigate("/");
+    navigate("/personalization");
+    
   };
 
   return (
@@ -175,9 +178,13 @@ function App() {
         <Route path="/" element={<Login/>} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/dashboard" element={<Dashboard/>}/>
+        <Route path="/personalization" element={<Personalization />} />
       </Routes>
     </Router>
   );
 }
+
+
+
 
 export default App;

@@ -24,9 +24,7 @@ function Dashboard() {
             setNews(data.articles);
         });
     }, [channel]);
-    const filteredNews=news.filter((item) =>
-        item.title?.toLowerCase().includes(search.toLowerCase())
-    );
+    
 
     const news= [
         {
@@ -73,7 +71,15 @@ function Dashboard() {
             description: "Latest updates in investment and stock market.",
             image: "https://via.placeholder.com/300x180"
         },
-    ];
+        
+    ];    
+        const filteredNews=news.filter((item) =>
+        item.title?.toLowerCase().includes(search.toLowerCase())
+    );
+
+
+
+    
     return(
         <div className={`dashboard ${isDarkMode ? 'dark-mode' : 'light-mode'}`}>
             <h1 classname= "header"> Geosphere 🌏 </h1>

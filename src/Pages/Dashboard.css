@@ -264,3 +264,27 @@ search-section button{
   background: white;
   border-radius: 12px;
 }
+.dashboard.small {
+    font-size: 12px;
+}
+.dashboard.medium{
+    font-size: 16px;
+}
+.dashboard.large{
+    font-size: 20px;
+}
+.list-container{
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+.list-container .card{
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+.list-container img{
+    width: 150px;
+    height: 100px;
+    
+}

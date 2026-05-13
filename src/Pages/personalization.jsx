@@ -32,10 +32,10 @@ const Personalization = () => {
                     <label><input type="checkbox" onChange={() => handleCategoryChange("Sports")}/>Sports</label>
                     <label><input type="checkbox" onChange={() => handleCategoryChange("Business")}/>Business</label>
                     <label><input type="checkbox" onChange={() => handleCategoryChange("Health")}/>Health</label>
-                    <label><input type="checkbox" onChange={() => handleCategoryChange("Education")}/>Education</label>
+                
                     <label><input type="checkbox" onChange={() => handleCategoryChange("Entertainment")}/>Entertainment</label>
                     <label><input type="checkbox" onChange={() => handleCategoryChange("Science")}/>Science</label>
-                     <label><input type="checkbox" onChange={() => handleCategoryChange("Investment and Stock Market")}/>Investment and Stock Market</label>
+                     
                 </div>
                 <h2>Choose Theme</h2>
                 <select value={theme} onChange={(e) => setTheme(e.target.value)}>

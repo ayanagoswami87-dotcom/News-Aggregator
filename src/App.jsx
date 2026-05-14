@@ -35,7 +35,7 @@ function Login() {
 
   return (
     <div>
-      <h1>News Aggregator App</h1>
+      <h1>Welcome to Geonews 🌏</h1>
       <h2>Login Page</h2>
 
       <form onSubmit={handleSubmit}>
@@ -110,7 +110,7 @@ function Signup() {
 
   return (
     <div>
-      <h1>News Aggregator App</h1>
+      <h1>Welcome to Geonews 🌏</h1>
       <h2>Signup Page</h2>
 
       <form onSubmit={handleSubmit}>

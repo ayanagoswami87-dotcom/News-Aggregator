@@ -17,7 +17,7 @@ function Login() {
 
   return (
     <div>
-      <h1>News Aggregator</h1>
+      <h1>Welcome to Geonews 🌏</h1>
       <p>Read Daily News Anytime</p>
 
       <form onSubmit={handleLogin}>

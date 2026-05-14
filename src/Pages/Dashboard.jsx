@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "./Dashboard.css";
 
@@ -26,8 +26,30 @@ function Dashboard() {
 
   const [loading, setLoading] = useState(false);
 
+
+  const [viewMode, setViewMode] = useState("detailed");
+  const [fontSize, setFontSize] = useState("medium");
+  console.log("Font Size:", fontSize);
+  const [layout, setLayout] = useState("grid");
+
+  // 👉 ADD THIS USEEFFECT HERE
+  useEffect(() => {
+    const saved = JSON.parse(localStorage.getItem("userPreferences"));
+    console.log("DASHBOARD DATA:", saved);
+
+    if (saved) {
+      setIsDarkMode(saved.theme === "Dark Mode");
+      setViewMode(saved.viewMode || "detailed");
+      setFontSize(saved.fontSize || "medium");
+      setLayout(saved.layout || "grid");
+    }
+  }, []);
+
+ 
+
   // PUT YOUR GNEWS API KEY HERE
   const API_KEY = "ed2f7aec665595d63a813ada95c7014d";
+
 
   // DARK MODE
   const toggleMode = () => {
@@ -77,6 +99,8 @@ function Dashboard() {
     setLoading(true);
 
     let url = "";
+
+
 
     // CHANNEL NEWS
     if (channel) {
@@ -264,9 +288,13 @@ function Dashboard() {
         isDarkMode
           ? "dark-mode"
           : "light-mode"
-      }`}
+          }
+          
+      }`} 
     >
-
+   
+    
+    
       <h1 className="header">
         Geosphere 🌏
       </h1>
@@ -514,7 +542,7 @@ function Dashboard() {
 
       {/* NEWS CARDS */}
 
-      <div className="cards-container">
+      <div className={"cards-container"}>
 
         {filteredNews.map(
           (item, index) => (
@@ -556,6 +584,12 @@ function Dashboard() {
               <h2>
                 {item.title}
               </h2>
+               {viewMode === "detailed" ? (
+
+                <p>
+                  {item.description}
+                </p>
+              ) : null}
 
               {/* RATING */}
 

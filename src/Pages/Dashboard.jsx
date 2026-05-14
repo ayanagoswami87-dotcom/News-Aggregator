@@ -1,59 +1,51 @@
-import React, { use, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
+
 import { Link } from "react-router-dom";
+
 import "./Dashboard.css";
 
 function Dashboard() {
 
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isDarkMode, setIsDarkMode] =
+    useState(false);
 
-  const [search, setSearch] = useState("");
+  const [search, setSearch] =
+    useState("");
 
-  const [selectedNews, setSelectedNews] = useState(null);
+  const [news, setNews] =
+    useState([]);
 
-  const [news, setNews] = useState([]);
+  const [page, setPage] =
+    useState(1);
 
-  const [page, setPage] = useState(1);
+  const [sortBy, setSortBy] =
+    useState("latest");
 
-  const [sortBy, setSortBy] = useState("latest");
+  const [isListening, setIsListening] =
+    useState(false);
 
-  const [isListening, setIsListening] = useState(false);
+  const [bookmarks, setBookmarks] =
+    useState([]);
 
-  const [bookmarks, setBookmarks] = useState([]);
+  const [category, setCategory] =
+    useState("");
 
-  const [category, setCategory] = useState("");
+  const [channel, setChannel] =
+    useState("");
 
-  const [channel, setChannel] = useState("");
+  const [loading, setLoading] =
+    useState(false);
 
-  const [loading, setLoading] = useState(false);
-
-
-  const [viewMode, setViewMode] = useState("detailed");
-  const [fontSize, setFontSize] = useState("medium");
-  console.log("Font Size:", fontSize);
-  const [layout, setLayout] = useState("grid");
-
-  // 👉 ADD THIS USEEFFECT HERE
-  useEffect(() => {
-    const saved = JSON.parse(localStorage.getItem("userPreferences"));
-    console.log("DASHBOARD DATA:", saved);
-
-    if (saved) {
-      setIsDarkMode(saved.theme === "Dark Mode");
-      setViewMode(saved.viewMode || "detailed");
-      setFontSize(saved.fontSize || "medium");
-      setLayout(saved.layout || "grid");
-    }
-  }, []);
-
- 
-
-  // PUT YOUR GNEWS API KEY HERE
-  const API_KEY = "ed2f7aec665595d63a813ada95c7014d";
-
+  // YOUR API KEY
+  const API_KEY =
+    "5dabd041937d8a6936955e9ace163bd8";
 
   // DARK MODE
   const toggleMode = () => {
-    setIsDarkMode(!isDarkMode);
+
+    setIsDarkMode(
+      !isDarkMode
+    );
   };
 
   // VOICE SEARCH
@@ -65,12 +57,15 @@ function Dashboard() {
 
     if (!SpeechRecognition) {
 
-      alert("Voice Search not supported");
+      alert(
+        "Voice Search not supported"
+      );
 
       return;
     }
 
-    const recognition = new SpeechRecognition();
+    const recognition =
+      new SpeechRecognition();
 
     recognition.lang = "en-US";
 
@@ -78,10 +73,13 @@ function Dashboard() {
 
     setIsListening(true);
 
-    recognition.onresult = (event) => {
+    recognition.onresult = (
+      event
+    ) => {
 
       setSearch(
-        event.results[0][0].transcript
+        event.results[0][0]
+          .transcript
       );
 
       setIsListening(false);
@@ -99,8 +97,6 @@ function Dashboard() {
     setLoading(true);
 
     let url = "";
-
-
 
     // CHANNEL NEWS
     if (channel) {
@@ -120,56 +116,53 @@ function Dashboard() {
         `&apikey=${API_KEY}`;
     }
 
-    // DEFAULT INDIA NEWS
+    // DEFAULT NEWS
     else {
 
       url =
         `https://gnews.io/api/v4/top-headlines?lang=en&country=in` +
-        `&max=10&page=${page}&apikey=${API_KEY}`;
+        `&max=10&page=${page}` +
+        `&apikey=${API_KEY}`;
     }
 
     try {
 
-      const response = await fetch(url);
+      const response =
+        await fetch(url);
 
-      const data = await response.json();
+      const data =
+        await response.json();
 
       console.log(data);
-
-      if (data.errors) {
-
-        alert("Invalid API Key");
-
-        setLoading(false);
-
-        return;
-      }
 
       if (data.articles) {
 
         const updatedArticles =
-          data.articles.map((item) => ({
+          data.articles.map(
+            (item) => ({
 
-            ...item,
+              ...item,
 
-            // FIX IMAGE FIELD
-            urlToImage: item.image,
+              urlToImage:
+                item.image,
 
-            // FIX SOURCE FIELD
-            source: {
-              name: item.source?.name,
-            },
+              source: {
+                name:
+                  item.source?.name,
+              },
 
-            // RANDOM RATINGS
-            rating:
-              Math.floor(
-                Math.random() * 5
-              ) + 1,
-          }));
+              rating:
+                Math.floor(
+                  Math.random() * 5
+                ) + 1,
+            })
+          );
 
         if (page === 1) {
 
-          setNews(updatedArticles);
+          setNews(
+            updatedArticles
+          );
 
         } else {
 
@@ -182,7 +175,7 @@ function Dashboard() {
 
     } catch (error) {
 
-      console.log("ERROR:", error);
+      console.log(error);
     }
 
     setLoading(false);
@@ -198,25 +191,21 @@ function Dashboard() {
   // INFINITE SCROLL
   useEffect(() => {
 
-    let timeout;
-
     const handleScroll = () => {
 
-      clearTimeout(timeout);
+      if (
+        window.innerHeight +
+          document.documentElement
+            .scrollTop + 1 >=
+        document.documentElement
+          .scrollHeight &&
+        !loading
+      ) {
 
-      timeout = setTimeout(() => {
-
-        if (
-          window.innerHeight +
-            document.documentElement.scrollTop + 1 >=
-            document.documentElement.scrollHeight &&
-          !loading
-        ) {
-
-          setPage((prev) => prev + 1);
-        }
-
-      }, 500);
+        setPage(
+          (prev) => prev + 1
+        );
+      }
     };
 
     window.addEventListener(
@@ -235,17 +224,22 @@ function Dashboard() {
   }, [loading]);
 
   // BOOKMARK
-  const handleBookmark = (item) => {
+  const handleBookmark = (
+    item
+  ) => {
 
     const alreadyBookmarked =
       bookmarks.find(
         (bookmark) =>
-          bookmark.url === item.url
+          bookmark.url ===
+          item.url
       );
 
     if (alreadyBookmarked) {
 
-      alert("Already Bookmarked");
+      alert(
+        "Already Bookmarked"
+      );
 
       return;
     }
@@ -255,10 +249,12 @@ function Dashboard() {
       item,
     ]);
 
-    alert("News Bookmarked");
+    alert(
+      "News Bookmarked"
+    );
   };
 
-  // FILTER + SORT
+  // FILTER NEWS
   const filteredNews = news
 
     .filter((item) =>
@@ -271,7 +267,9 @@ function Dashboard() {
 
     .sort((a, b) => {
 
-      if (sortBy === "ratings") {
+      if (
+        sortBy === "ratings"
+      ) {
 
         return (
           b.rating - a.rating
@@ -288,13 +286,11 @@ function Dashboard() {
         isDarkMode
           ? "dark-mode"
           : "light-mode"
-          }
-          
-      }`} 
+      }`}
     >
-   
-    
-    
+
+      {/* HEADER */}
+
       <h1 className="header">
         Geosphere 🌏
       </h1>
@@ -350,7 +346,9 @@ function Dashboard() {
         </button>
 
         <button
-          onClick={startVoiceSearch}
+          onClick={
+            startVoiceSearch
+          }
         >
 
           {isListening
@@ -398,7 +396,9 @@ function Dashboard() {
 
             setCategory("");
 
-            setChannel("The Hindu");
+            setChannel(
+              "The Hindu"
+            );
           }}
         >
           The Hindu
@@ -411,7 +411,9 @@ function Dashboard() {
 
             setCategory("");
 
-            setChannel("Times of India");
+            setChannel(
+              "Times of India"
+            );
           }}
         >
           The Times of India
@@ -542,72 +544,72 @@ function Dashboard() {
 
       {/* NEWS CARDS */}
 
-      <div className={"cards-container"}>
+      <div className="cards-container">
 
         {filteredNews.map(
           (item, index) => (
 
-            <div
-              className="card"
+            <Link
               key={index}
-              onClick={() =>
-                setSelectedNews(item)
-              }
+              to="/news-details"
+              state={item}
+              style={{
+                textDecoration:
+                  "none",
+                color: "inherit",
+              }}
             >
 
-              {/* BOOKMARK */}
+              <div className="card">
 
-              <button
-                className="bookmark-btn"
-                onClick={(e) => {
+                <button
+                  className="bookmark-btn"
+                  onClick={(e) => {
 
-                  e.stopPropagation();
+                    e.preventDefault();
 
-                  handleBookmark(item);
-                }}
-              >
-                🔖
-              </button>
+                    e.stopPropagation();
 
-              {/* IMAGE */}
+                    handleBookmark(
+                      item
+                    );
+                  }}
+                >
+                  🔖
+                </button>
 
-              <img
-                src={
-                  item.urlToImage ||
-                  "https://via.placeholder.com/300x180"
-                }
-                alt="news"
-              />
+                <img
+                  src={
+                    item.urlToImage ||
+                    "https://via.placeholder.com/300"
+                  }
+                  alt="news"
+                />
 
-              {/* TITLE */}
-
-              <h2>
-                {item.title}
-              </h2>
-               {viewMode === "detailed" ? (
+                <h2>
+                  {item.title}
+                </h2>
 
                 <p>
                   {item.description}
                 </p>
-              ) : null}
 
-              {/* RATING */}
+                <p>
+                  ⭐ Rating:
+                  {item.rating}/5
+                </p>
 
-              <p>
-                ⭐ Rating:
-                {item.rating}/5
-              </p>
+                <p>
 
-              {/* SOURCE */}
+                  <b>Source:</b>{" "}
 
-              <p>
-                <b>Source:</b>{" "}
-                {
-                  item.source?.name
-                }
-              </p>
+                  {item.source?.name}
 
-            </div>
+                </p>
+
+              </div>
+
+            </Link>
 
           )
         )}
@@ -620,65 +622,14 @@ function Dashboard() {
 
         <h2
           style={{
-            textAlign: "center",
-            marginTop: "20px",
+            textAlign:
+              "center",
           }}
         >
 
           Loading News...
 
         </h2>
-
-      )}
-
-      {/* NEWS DETAILS */}
-
-      {selectedNews && (
-
-        <div className="news-details">
-
-          <h2>
-            {selectedNews.title}
-          </h2>
-
-          <img
-            src={
-              selectedNews.urlToImage ||
-              "https://via.placeholder.com/500x300"
-            }
-            alt="news"
-
-            style={{
-              width: "100%",
-              borderRadius: "10px",
-            }}
-          />
-
-          <p
-            style={{
-              marginTop: "20px",
-            }}
-          >
-
-            {
-              selectedNews.description
-            }
-
-          </p>
-
-          <a
-            href={
-              selectedNews.url
-            }
-            target="_blank"
-            rel="noreferrer"
-          >
-
-            Read Full News
-
-          </a>
-
-        </div>
 
       )}
 

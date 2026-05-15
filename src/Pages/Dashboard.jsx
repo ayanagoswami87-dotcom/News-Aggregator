@@ -1,11 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, {
+  useEffect,
+  useState,
+} from "react";
 
-import { Link } from "react-router-dom";
+import {
+  Link,
+} from "react-router-dom";
 
 import "./Dashboard.css";
 
 function Dashboard() {
 
+  // STATES
   const [isDarkMode, setIsDarkMode] =
     useState(false);
 
@@ -36,11 +42,9 @@ function Dashboard() {
   const [loading, setLoading] =
     useState(false);
 
-  
-
-  // YOUR API KEY
+  // GNEWS API KEY
   const API_KEY =
-    "5dabd041937d8a6936955e9ace163bd8";
+    "ed2f7aec665595d63a813ada95c7014d";
 
   // DARK MODE
   const toggleMode = () => {
@@ -49,9 +53,6 @@ function Dashboard() {
       !isDarkMode
     );
   };
-
-  
-
 
   // VOICE SEARCH
   const startVoiceSearch = () => {
@@ -103,8 +104,17 @@ function Dashboard() {
 
     let url = "";
 
+    // SEARCH NEWS
+    if (search) {
+
+      url =
+        `https://gnews.io/api/v4/search?q=${search}` +
+        `&lang=en&country=in&max=10&page=${page}` +
+        `&apikey=${API_KEY}`;
+    }
+
     // CHANNEL NEWS
-    if (channel) {
+    else if (channel) {
 
       url =
         `https://gnews.io/api/v4/search?q=${channel}` +
@@ -140,7 +150,14 @@ function Dashboard() {
 
       console.log(data);
 
-      if (data.articles) {
+      // SAFE CHECK
+      if (
+        data &&
+        data.articles &&
+        Array.isArray(
+          data.articles
+        )
+      ) {
 
         const updatedArticles =
           data.articles.map(
@@ -163,30 +180,44 @@ function Dashboard() {
             })
           );
 
+        // FIRST PAGE
         if (page === 1) {
 
           setNews(
             updatedArticles
           );
 
-        } else {
+        }
+
+        // INFINITE SCROLL
+        else {
 
           setNews((prev) => [
             ...prev,
             ...updatedArticles,
           ]);
         }
+
+      } else {
+
+        console.log(
+          "No articles found"
+        );
+
+        setNews([]);
       }
 
     } catch (error) {
 
       console.log(error);
+
+      setNews([]);
     }
 
     setLoading(false);
   };
 
-  // FETCH NEWS
+  // INITIAL FETCH
   useEffect(() => {
 
     fetchNews();
@@ -346,7 +377,14 @@ function Dashboard() {
           }
         />
 
-        <button>
+        <button
+          onClick={() => {
+
+            setPage(1);
+
+            fetchNews();
+          }}
+        >
           Search 🔍
         </button>
 
@@ -373,6 +411,8 @@ function Dashboard() {
 
             setPage(1);
 
+            setSearch("");
+
             setCategory("");
 
             setChannel("BBC");
@@ -386,6 +426,8 @@ function Dashboard() {
 
             setPage(1);
 
+            setSearch("");
+
             setCategory("");
 
             setChannel("CNN");
@@ -398,6 +440,8 @@ function Dashboard() {
           onClick={() => {
 
             setPage(1);
+
+            setSearch("");
 
             setCategory("");
 
@@ -413,6 +457,8 @@ function Dashboard() {
           onClick={() => {
 
             setPage(1);
+
+            setSearch("");
 
             setCategory("");
 
@@ -460,6 +506,8 @@ function Dashboard() {
 
             setPage(1);
 
+            setSearch("");
+
             setChannel("");
 
             setCategory(
@@ -474,6 +522,8 @@ function Dashboard() {
           onClick={() => {
 
             setPage(1);
+
+            setSearch("");
 
             setChannel("");
 
@@ -490,6 +540,8 @@ function Dashboard() {
 
             setPage(1);
 
+            setSearch("");
+
             setChannel("");
 
             setCategory(
@@ -504,6 +556,8 @@ function Dashboard() {
           onClick={() => {
 
             setPage(1);
+
+            setSearch("");
 
             setChannel("");
 
@@ -520,6 +574,8 @@ function Dashboard() {
 
             setPage(1);
 
+            setSearch("");
+
             setChannel("");
 
             setCategory(
@@ -534,6 +590,8 @@ function Dashboard() {
           onClick={() => {
 
             setPage(1);
+
+            setSearch("");
 
             setChannel("");
 
@@ -642,4 +700,4 @@ function Dashboard() {
   );
 }
 
-export default Dashboard;    
+export default Dashboard;

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Personalization = () => {
 
@@ -37,29 +38,26 @@ const Personalization = () => {
   };
 
   // SAVE (FORCE FRESH SAVE)
-  const savePreferences = () => {
-
-    const preferences = {
-      categories,
-      theme,
-      viewMode,
-      fontSize,
-      layout,
-    };
-
-    console.log("Saving Preferences:", preferences); // DEBUG
-
-    // CLEAR OLD DATA FIRST (IMPORTANT FIX)
-    localStorage.removeItem("userPreferences");
-
-    // SAVE NEW DATA
-    localStorage.setItem("userPreferences", JSON.stringify(preferences));
-
-    alert("Preferences Saved!");
-
-    window.location.href = "/dashboard";
+  
+const savePreferences = () => {
+  const preferences = {
+    categories,
+    theme,
+    viewMode,
+    fontSize,
+    layout,
   };
 
+  console.log("Saving Preferences:", preferences);
+
+  // ✅ Directly save (no removeItem)
+  localStorage.setItem("userPreferences", JSON.stringify(preferences));
+
+  alert("Preferences Saved!");
+
+  // ✅ Better navigation (no reload issue)
+  window.location.assign("/dashboard");
+};
   return (
     
     <div className={theme === "Dark Mode" ? "dark-mode" : "light-mode"}>
@@ -88,7 +86,8 @@ const Personalization = () => {
               <input
                 type="checkbox"
                 checked={categories.includes(cat)}
-                onChange={() => handleCategoryChange(cat)}
+                onChange={() => handleCategoryChange(cat.toLowerCase())}
+                
               />
               {cat}
             </label>

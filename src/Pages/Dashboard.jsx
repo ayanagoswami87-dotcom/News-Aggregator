@@ -36,6 +36,8 @@ function Dashboard() {
   const [loading, setLoading] =
     useState(false);
 
+  
+
   // YOUR API KEY
   const API_KEY =
     "5dabd041937d8a6936955e9ace163bd8";
@@ -47,6 +49,9 @@ function Dashboard() {
       !isDarkMode
     );
   };
+
+  
+
 
   // VOICE SEARCH
   const startVoiceSearch = () => {
@@ -637,4 +642,4 @@ function Dashboard() {
   );
 }
 
-export default Dashboard;
+export default Dashboard;    

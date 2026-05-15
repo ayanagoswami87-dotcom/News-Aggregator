@@ -1,0 +1,115 @@
+/* Login.css */
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+}
+
+/* MAIN CONTAINER */
+.login-container {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  /* BACKGROUND IMAGE */
+  background: linear-gradient(
+      rgba(0, 0, 0, 0.5),
+      rgba(0, 0, 0, 0.5)
+    ),
+    url("https://images.unsplash.com/photo-1504711434969-e33886168f5c");
+
+  background-size: cover;
+  background-position: center;
+}
+
+/* LOGIN BOX */
+.login-box {
+  width: 350px;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  padding: 35px;
+  border-radius: 15px;
+  text-align: center;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* TITLE */
+.login-box h1 {
+  color: white;
+  margin-bottom: 10px;
+  font-size: 34px;
+}
+
+/* SUBTITLE */
+.login-box p {
+  color: #f1f1f1;
+  margin-bottom: 25px;
+  font-size: 16px;
+}
+
+/* INPUT FIELDS */
+.login-box input {
+  width: 100%;
+  padding: 14px;
+  margin-bottom: 18px;
+  border: none;
+  border-radius: 10px;
+  outline: none;
+  font-size: 15px;
+  box-sizing: border-box;
+}
+
+/* INPUT FOCUS */
+.login-box input:focus {
+  border: 2px solid #4facfe;
+}
+
+/* BUTTON */
+.login-box button {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 10px;
+  background: #007bff;
+  color: white;
+  font-size: 17px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+/* BUTTON HOVER */
+.login-box button:hover {
+  background: #0056b3;
+  transform: scale(1.02);
+}
+
+/* LINKS */
+.login-links {
+  margin-top: 20px;
+}
+
+.login-links a {
+  color: white;
+  text-decoration: none;
+  font-size: 15px;
+  transition: 0.3s;
+}
+
+.login-links a:hover {
+  color: #4facfe;
+  text-decoration: underline;
+}
+
+/* RESPONSIVE */
+@media (max-width: 480px) {
+  .login-box {
+    width: 90%;
+    padding: 25px;
+  }
+
+  .login-box h1 {
+    font-size: 28px;
+  }
+}

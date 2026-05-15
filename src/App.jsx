@@ -35,8 +35,9 @@ function Login() {
 
   return (
     <div>
-      <h1>Welcome to Geonews 🌏</h1>
-      <h2>Login Page</h2>
+      <h1>Hi, Welcome to Geonews 🌏</h1>
+      <p>Read Daily News Anytime.....</p>
+      <h2>Login </h2>
 
       <form onSubmit={handleSubmit}>
         <div>
@@ -110,8 +111,9 @@ function Signup() {
 
   return (
     <div>
-      <h1>Welcome to Geonews 🌏</h1>
-      <h2>Signup Page</h2>
+      <h1>Hi, Welcome to Geonews 🌏</h1>
+      <p>Read Daily News Anytime.....</p>
+      <h2>Sign up</h2>
 
       <form onSubmit={handleSubmit}>
         <div>

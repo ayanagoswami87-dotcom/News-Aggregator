@@ -1,3 +1,5 @@
+// Dashboard.jsx
+
 import React, {
   useEffect,
   useState,
@@ -42,9 +44,19 @@ function Dashboard() {
   const [loading, setLoading] =
     useState(false);
 
-  // GNEWS API KEY
-  const API_KEY =
+  // WEATHER STATES
+  const [weather, setWeather] =
+    useState(null);
+
+  const [city, setCity] =
+    useState("Dhemaji");
+
+  // API KEYS
+  const NEWS_API_KEY =
     "ed2f7aec665595d63a813ada95c7014d";
+
+  const WEATHER_API_KEY =
+    "a3a17aa5e90e1f7f7469785177d1dce5";
 
   // DARK MODE
   const toggleMode = () => {
@@ -97,6 +109,74 @@ function Dashboard() {
     };
   };
 
+  // FETCH WEATHER
+  const fetchWeather =
+    async () => {
+
+      // EMPTY INPUT
+      if (!city.trim()) {
+
+        alert(
+          "Please enter city name"
+        );
+
+        return;
+      }
+
+      try {
+
+        const response =
+          await fetch(
+            `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(
+              city
+            )}&appid=${WEATHER_API_KEY}&units=metric`
+          );
+
+        const data =
+          await response.json();
+
+        console.log(
+          "Weather Data:",
+          data
+        );
+
+        // INVALID CITY
+        if (
+          data.cod === "404" ||
+          data.cod === 404
+        ) {
+
+          alert(
+            "City not found"
+          );
+
+          return;
+        }
+
+        // INVALID API KEY
+        if (
+          data.cod === 401
+        ) {
+
+          alert(
+            "Invalid Weather API Key"
+          );
+
+          return;
+        }
+
+        setWeather(data);
+
+      } catch (error) {
+
+        console.log(error);
+
+        alert(
+          "Weather API Error"
+        );
+      }
+    };
+
   // FETCH NEWS
   const fetchNews = async () => {
 
@@ -110,7 +190,7 @@ function Dashboard() {
       url =
         `https://gnews.io/api/v4/search?q=${search}` +
         `&lang=en&country=in&max=10&page=${page}` +
-        `&apikey=${API_KEY}`;
+        `&apikey=${NEWS_API_KEY}`;
     }
 
     // CHANNEL NEWS
@@ -119,7 +199,7 @@ function Dashboard() {
       url =
         `https://gnews.io/api/v4/search?q=${channel}` +
         `&lang=en&country=in&max=10&page=${page}` +
-        `&apikey=${API_KEY}`;
+        `&apikey=${NEWS_API_KEY}`;
     }
 
     // CATEGORY NEWS
@@ -128,7 +208,7 @@ function Dashboard() {
       url =
         `https://gnews.io/api/v4/top-headlines?category=${category}` +
         `&lang=en&country=in&max=10&page=${page}` +
-        `&apikey=${API_KEY}`;
+        `&apikey=${NEWS_API_KEY}`;
     }
 
     // DEFAULT NEWS
@@ -137,7 +217,7 @@ function Dashboard() {
       url =
         `https://gnews.io/api/v4/top-headlines?lang=en&country=in` +
         `&max=10&page=${page}` +
-        `&apikey=${API_KEY}`;
+        `&apikey=${NEWS_API_KEY}`;
     }
 
     try {
@@ -148,9 +228,11 @@ function Dashboard() {
       const data =
         await response.json();
 
-      console.log(data);
+      console.log(
+        "News Data:",
+        data
+      );
 
-      // SAFE CHECK
       if (
         data &&
         data.articles &&
@@ -200,10 +282,6 @@ function Dashboard() {
 
       } else {
 
-        console.log(
-          "No articles found"
-        );
-
         setNews([]);
       }
 
@@ -221,6 +299,8 @@ function Dashboard() {
   useEffect(() => {
 
     fetchNews();
+
+    fetchWeather();
 
   }, [page, category, channel]);
 
@@ -330,6 +410,82 @@ function Dashboard() {
       <h1 className="header">
         Geosphere 🌏
       </h1>
+
+      {/* WEATHER SECTION */}
+
+      <div className="weather-card">
+
+        <h2>
+          Weather 🌤️
+        </h2>
+
+        <input
+          type="text"
+          placeholder="Enter city name"
+          value={city}
+          onChange={(e) =>
+            setCity(
+              e.target.value
+            )
+          }
+
+          onKeyDown={(e) => {
+
+            if (
+              e.key === "Enter"
+            ) {
+
+              fetchWeather();
+            }
+          }}
+        />
+
+        <button
+          onClick={() => {
+
+            fetchWeather();
+          }}
+        >
+          Check Weather
+        </button>
+
+        {weather &&
+          weather.main && (
+
+            <div>
+
+              <h3>
+                {weather.name}
+              </h3>
+
+              <p>
+                🌡️ Temperature:
+                {
+                  weather.main.temp
+                }
+                °C
+              </p>
+
+              <p>
+                ☁️ Weather:
+                {
+                  weather.weather[0]
+                    .main
+                }
+              </p>
+
+              <p>
+                💨 Wind Speed:
+                {
+                  weather.wind.speed
+                }
+                km/h
+              </p>
+
+            </div>
+          )}
+
+      </div>
 
       {/* TOPBAR */}
 
@@ -453,26 +609,9 @@ function Dashboard() {
           The Hindu
         </button>
 
-        <button
-          onClick={() => {
-
-            setPage(1);
-
-            setSearch("");
-
-            setCategory("");
-
-            setChannel(
-              "Times of India"
-            );
-          }}
-        >
-          The Times of India
-        </button>
-
       </div>
 
-      {/* SORT */}
+      {/* FILTER */}
 
       <div className="filters">
 
@@ -552,128 +691,94 @@ function Dashboard() {
           Business
         </button>
 
-        <button
-          onClick={() => {
-
-            setPage(1);
-
-            setSearch("");
-
-            setChannel("");
-
-            setCategory(
-              "entertainment"
-            );
-          }}
-        >
-          Entertainment
-        </button>
-
-        <button
-          onClick={() => {
-
-            setPage(1);
-
-            setSearch("");
-
-            setChannel("");
-
-            setCategory(
-              "health"
-            );
-          }}
-        >
-          Health
-        </button>
-
-        <button
-          onClick={() => {
-
-            setPage(1);
-
-            setSearch("");
-
-            setChannel("");
-
-            setCategory(
-              "science"
-            );
-          }}
-        >
-          Science
-        </button>
-
       </div>
 
       {/* NEWS CARDS */}
 
       <div className="cards-container">
 
-        {filteredNews.map(
-          (item, index) => (
+        {filteredNews.length ===
+        0 ? (
 
-            <Link
-              key={index}
-              to="/news-details"
-              state={item}
-              style={{
-                textDecoration:
-                  "none",
-                color: "inherit",
-              }}
-            >
+          <h2>
+            No News Found
+          </h2>
 
-              <div className="card">
+        ) : (
 
-                <button
-                  className="bookmark-btn"
-                  onClick={(e) => {
+          filteredNews.map(
+            (item, index) => (
 
-                    e.preventDefault();
+              <Link
+                key={index}
+                to="/news-details"
+                state={item}
+                style={{
+                  textDecoration:
+                    "none",
+                  color: "inherit",
+                }}
+              >
 
-                    e.stopPropagation();
+                <div className="card">
 
-                    handleBookmark(
-                      item
-                    );
-                  }}
-                >
-                  🔖
-                </button>
+                  <button
+                    className="bookmark-btn"
+                    onClick={(e) => {
 
-                <img
-                  src={
-                    item.urlToImage ||
-                    "https://via.placeholder.com/300"
-                  }
-                  alt="news"
-                />
+                      e.preventDefault();
 
-                <h2>
-                  {item.title}
-                </h2>
+                      e.stopPropagation();
 
-                <p>
-                  {item.description}
-                </p>
+                      handleBookmark(
+                        item
+                      );
+                    }}
+                  >
+                    🔖
+                  </button>
 
-                <p>
-                  ⭐ Rating:
-                  {item.rating}/5
-                </p>
+                  <img
+                    src={
+                      item.urlToImage ||
+                      "https://via.placeholder.com/300"
+                    }
+                    alt="news"
+                  />
 
-                <p>
+                  <h2>
+                    {item.title}
+                  </h2>
 
-                  <b>Source:</b>{" "}
+                  <p>
+                    {
+                      item.description
+                    }
+                  </p>
 
-                  {item.source?.name}
+                  <p>
+                    ⭐ Rating:
+                    {item.rating}/5
+                  </p>
 
-                </p>
+                  <p>
 
-              </div>
+                    <b>
+                      Source:
+                    </b>{" "}
 
-            </Link>
+                    {
+                      item.source
+                        ?.name
+                    }
 
+                  </p>
+
+                </div>
+
+              </Link>
+
+            )
           )
         )}
 

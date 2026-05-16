@@ -910,13 +910,24 @@ ref={newsRef}
                     🔖
                   </button>
 
-                  <img
-                    src={
-                      item.urlToImage ||
-                      "https://via.placeholder.com/300"
-                    }
-                    alt="news"
-                  />
+                <img
+src={
+item.image ||
+
+"https://images.unsplash.com/photo-1504711434969-e33886168f5c?q=80&w=1000"
+}
+alt="news"
+
+onError={(e)=>{
+
+e.target.src=
+
+"https://images.unsplash.com/photo-1504711434969-e33886168f5c?q=80&w=1000";
+
+}}
+
+/>
+                  
 
                   <h2>
                     {item.title}

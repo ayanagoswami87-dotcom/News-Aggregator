@@ -900,7 +900,35 @@ function Dashboard() {
         </h2>
 
       )}
+    {/* FOOTER */}
 
+<footer className="footer">
+
+  <div className="footer-content">
+
+    <h3>
+      Geosphere 🌍
+    </h3>
+
+    <p>
+      Smart News & Weather
+      Aggregator Platform
+    </p>
+
+    <p>
+      Built with React • MongoDB •
+      GNews API • Weather API
+    </p>
+
+    <p className="copyright">
+
+      © 2026 Geosphere Team
+
+    </p>
+
+  </div>
+
+</footer>
     </div>
   );
 }

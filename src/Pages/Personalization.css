@@ -1,0 +1,117 @@
+/* Tight reset to maximize space */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.dashboard-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start; 
+  background-color: #fcece8;
+  min-height: 100vh;
+  width: 100%;
+}
+
+.personalization-card {
+  background: white;
+  width: 100%;
+  max-width: 650px; /* Made the card significantly narrower */
+  min-height: auto; /* Removed 100vh for a "small page" look */
+  border: 2px solid #000;
+  border-top: none; /* Keeps it flush with top bar */
+  padding: 20px 30px; 
+  display: flex;
+  flex-direction: column;
+}
+
+.header-box {
+  display: inline-block;
+  border: 2px solid #000;
+  border-radius: 8px;
+  padding: 5px 12px;
+  margin-bottom: 20px;
+  align-self: center; /* Centered the header for the small design */
+}
+
+.header-text {
+  color: #FF4D2D;
+  font-weight: 900;
+  font-style: italic;
+  font-size: 1.4rem;
+  margin: 0;
+}
+
+.section { margin-bottom: 10px; }
+.section-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+
+.icon-circle {
+  min-width: 35px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+.yellow-box { background: #FFF1EE; border: 2px solid #000; color: #FF4D2D; }
+.green-box { background: #FFF1EE; border: 1px solid #FFD8D0; color: #FF4D2D; }
+
+.label-text { font-size: 0.95rem; font-weight: 800; color: #2c3e50; margin: 0; }
+.sub-label { font-size: 0.8rem; color: #7f8c8d; margin: 0; }
+.content-padding { padding-left: 45px; }
+
+/* Themes & Dots */
+.color-row { display: flex; gap: 8px; }
+.dot { width: 24px; height: 24px; border-radius: 50%; border: none; cursor: pointer; }
+.dot.active { outline: 2px solid #FF4D2D; outline-offset: 2px; }
+.orange { background: #FF8A00; }
+.red { background: #FF4D4D; }
+.blue { background: #2D70FF; }
+.purple { background: #8E2DFF; }
+.green { background: #39C11E; }
+
+.theme-flex { display: flex; gap: 12px; }
+.theme-item { width: 100px; cursor: pointer; text-align: center; }
+.preview { height: 60px; border-radius: 10px; border: 1px solid #eee; position: relative; margin-bottom: 5px; background: #fff; }
+.theme-item.active .preview { border: 2px solid #FF4D2D; }
+.dark-thumb { background: #1A1D23; }
+.system-thumb { display: flex; overflow: hidden; }
+.half-l { width: 50%; background: #fff; }
+.half-d { width: 50%; background: #1A1D23; }
+.thumb-name { font-size: 0.75rem; font-weight: 700; }
+
+/* Tags */
+.tag-cloud { display: flex; flex-wrap: wrap; gap: 6px; }
+.pill-tag { background: #FFF1EE; border: 1px solid #FFD8D0; padding: 4px 10px; border-radius: 15px; font-size: 0.75rem; font-weight: 700; color: #2c3e50; }
+
+/* Language */
+.lang-box { 
+  border: 1px solid #eee; 
+  background: #fafafa; 
+  border-radius: 8px; 
+  padding: 0 10px; 
+  height: 40px; 
+  display: flex; 
+  align-items: center; 
+  position: relative; 
+  max-width: 300px; 
+}
+.flag-symbol { font-size: 1.1rem; margin-right: 8px; }
+.clean-select { border: none; background: transparent; width: 100%; outline: none; font-weight: 700; color: #2c3e50; cursor: pointer; font-size: 0.85rem; appearance: none; }
+
+.line-sep { border: 0; border-top: 1px solid #f5f5f5; margin: 10px 0; }
+
+.action-btn {
+  width: 100%;
+  background: #FF4D2D;
+  color: white;
+  border: none;
+  padding: 14px;
+  border-radius: 10px;
+  font-weight: 800;
+  margin-top: 15px;
+  cursor: pointer;
+}

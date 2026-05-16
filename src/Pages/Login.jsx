@@ -1,19 +1,53 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function Login() {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = (e) => {
-    e.preventDefault();
-    navigate("/personalization");
+  const handleLogin = async (e) => {
 
-    if (email === "" || password === "") {
-      alert("Please fill all fields");
+  e.preventDefault();
+
+  try {
+
+    const response = await fetch(
+      "http://localhost:5000/login",
+      {
+        method: "POST",
+
+        headers: {
+          "Content-Type":
+            "application/json",
+        },
+
+        body: JSON.stringify({
+          email,
+          password,
+        }),
+      }
+    );
+
+    const data =
+      await response.json();
+
+    if (data.success) {
+
+      alert(data.message);
+
+      navigate("/dashboard");
+
     } else {
-      alert("Login Successful");
+
+      alert(data.message);
     }
-  };
+
+  } catch (error) {
+
+    console.log(error);
+  }
+};
 
   return (
     <div>

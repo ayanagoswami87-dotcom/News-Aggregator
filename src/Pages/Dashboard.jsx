@@ -410,6 +410,37 @@ function Dashboard() {
       <h1 className="header">
         Geosphere 🌏
       </h1>
+       {/* TOPBAR */}
+
+      <div className="topbar">
+
+        <h3>
+          Welcome to the News Dashboard 👋
+        </h3>
+
+        <div className="topbar-actions">
+
+          <button
+            className="mode-btn"
+            onClick={toggleMode}
+          >
+
+            {isDarkMode
+              ? "☀️ Light Mode"
+              : "🌙 Dark Mode"}
+
+          </button>
+
+          <Link to="/">
+            <button className="logout-btn">
+              Logout
+            </button>
+          </Link>
+
+        </div>
+
+      </div>
+
 
       {/* WEATHER SECTION */}
 
@@ -487,37 +518,7 @@ function Dashboard() {
 
       </div>
 
-      {/* TOPBAR */}
-
-      <div className="topbar">
-
-        <h3>
-          Welcome to the News Dashboard 👋
-        </h3>
-
-        <div className="topbar-actions">
-
-          <button
-            className="mode-btn"
-            onClick={toggleMode}
-          >
-
-            {isDarkMode
-              ? "☀️ Light Mode"
-              : "🌙 Dark Mode"}
-
-          </button>
-
-          <Link to="/">
-            <button className="logout-btn">
-              Logout
-            </button>
-          </Link>
-
-        </div>
-
-      </div>
-
+     
       {/* SEARCH */}
 
       <div className="search-section">
@@ -608,6 +609,55 @@ function Dashboard() {
         >
           The Hindu
         </button>
+         <button
+          onClick={() => {
+
+            setPage(1);
+
+            setSearch("");
+
+            setCategory("");
+
+            setChannel(
+              " Times of India"
+            );
+          }}
+        >
+          The Times of India
+        </button>
+         <button
+          onClick={() => {
+
+            setPage(1);
+
+            setSearch("");
+
+            setCategory("");
+
+            setChannel(
+              "NDTV"
+            );
+          }}
+        >
+          NDTV
+        </button>
+         <button
+          onClick={() => {
+
+            setPage(1);
+
+            setSearch("");
+
+            setCategory("");
+
+            setChannel(
+              "Financial Express"
+            );
+          }}
+        >
+          Financial Express
+        </button>
+
 
       </div>
 
@@ -690,6 +740,56 @@ function Dashboard() {
         >
           Business
         </button>
+         <button
+          onClick={() => {
+
+            setPage(1);
+
+            setSearch("");
+
+            setChannel("");
+
+            setCategory(
+              "health"
+            );
+          }}
+        >
+            Health
+        </button>
+         <button
+          onClick={() => {
+
+            setPage(1);
+
+            setSearch("");
+
+            setChannel("");
+
+            setCategory(
+              "entertainment"
+            );
+          }}
+        >
+          Entertainment
+        </button>
+         <button
+          onClick={() => {
+
+            setPage(1);
+
+            setSearch("");
+
+            setChannel("");
+
+            setCategory(
+              "science"
+            );
+          }}
+        >
+          Science
+        </button>
+         
+
 
       </div>
 

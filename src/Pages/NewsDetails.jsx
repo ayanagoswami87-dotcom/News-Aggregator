@@ -13,12 +13,43 @@ function NewsDetails() {
   const [comments, setComments] = useState([]);
 
   // ADD COMMENT
-  const handleComment = () => {
+  const handleComment =
+  async () => {
 
-    if (comment.trim() === "") {
+  if (
+    comment.trim() === ""
+  ) {
 
-      return;
-    }
+    return;
+  }
+
+  try {
+
+    const response =
+      await fetch(
+        "http://localhost:5000/comment",
+        {
+          method: "POST",
+
+          headers: {
+            "Content-Type":
+              "application/json",
+          },
+
+          body: JSON.stringify({
+            newsTitle:
+              article.title,
+
+            comment:
+              comment,
+          }),
+        }
+      );
+
+    const data =
+      await response.json();
+
+    alert(data.message);
 
     setComments([
       ...comments,
@@ -26,7 +57,12 @@ function NewsDetails() {
     ]);
 
     setComment("");
-  };
+
+  } catch (error) {
+
+    console.log(error);
+  }
+};
 
   // IF NO ARTICLE
   if (!article) {

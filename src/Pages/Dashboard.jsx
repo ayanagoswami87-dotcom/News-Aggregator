@@ -3,6 +3,7 @@
 import React, {
   useEffect,
   useState,
+  useRef,
 } from "react";
 
 import {
@@ -25,6 +26,8 @@ function Dashboard() {
 
   const [page, setPage] =
     useState(1);
+  const newsRef =
+useRef(null);
 
   const [sortBy, setSortBy] =
     useState("latest");
@@ -47,13 +50,18 @@ function Dashboard() {
   // WEATHER STATES
   const [weather, setWeather] =
     useState(null);
+  
+  const [trendingNews, setTrendingNews] =
+  useState([]);
+
+ 
 
   const [city, setCity] =
-    useState("Dhemaji");
+    useState("");
 
   // API KEYS
   const NEWS_API_KEY =
-    "ed2f7aec665595d63a813ada95c7014d";
+    "5dabd041937d8a6936955e9ace163bd8";
 
   const WEATHER_API_KEY =
     "a3a17aa5e90e1f7f7469785177d1dce5";
@@ -110,235 +118,231 @@ function Dashboard() {
   };
 
   // FETCH WEATHER
-  const fetchWeather =
-    async () => {
+ const fetchWeather = async () => {
 
-      // EMPTY INPUT
-      if (!city.trim()) {
+if(city.trim()===""){
 
-        alert(
-          "Please enter city name"
-        );
+return;
 
-        return;
-      }
+}
 
-      try {
+try{
 
-        const response =
-          await fetch(
-            `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(
-              city
-            )}&appid=${WEATHER_API_KEY}&units=metric`
-          );
+const response =
+await fetch(
 
-        const data =
-          await response.json();
+`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${WEATHER_API_KEY}&units=metric`
 
-        console.log(
-          "Weather Data:",
-          data
-        );
+);
 
-        // INVALID CITY
-        if (
-          data.cod === "404" ||
-          data.cod === 404
-        ) {
+const data =
+await response.json();
 
-          alert(
-            "City not found"
-          );
+setWeather(data);
 
-          return;
-        }
+}
 
-        // INVALID API KEY
-        if (
-          data.cod === 401
-        ) {
+catch(error){
 
-          alert(
-            "Invalid Weather API Key"
-          );
+console.log(error);
 
-          return;
-        }
+}
 
-        setWeather(data);
+};
+      
 
-      } catch (error) {
+ 
+ 
+  // TRENDING NEWS
 
-        console.log(error);
+ const fetchTrendingNews = async () => {
 
-        alert(
-          "Weather API Error"
-        );
-      }
-    };
+try {
 
-  // FETCH NEWS
-  const fetchNews = async () => {
+const response = await fetch(
 
-    setLoading(true);
+`https://gnews.io/api/v4/top-headlines?lang=en&country=in&max=5&apikey=${NEWS_API_KEY}`
 
-    let url = "";
+);
 
-    // SEARCH NEWS
-    if (search) {
+const data = await response.json();
 
-      url =
-        `https://gnews.io/api/v4/search?q=${search}` +
-        `&lang=en&country=in&max=10&page=${page}` +
-        `&apikey=${NEWS_API_KEY}`;
-    }
+console.log(
+"Trending Data:",
+data
+);
 
-    // CHANNEL NEWS
-    else if (channel) {
+if(
+data &&
+data.articles &&
+data.articles.length > 0
+){
 
-      url =
-        `https://gnews.io/api/v4/search?q=${channel}` +
-        `&lang=en&country=in&max=10&page=${page}` +
-        `&apikey=${NEWS_API_KEY}`;
-    }
+setTrendingNews(
+data.articles
+);
 
-    // CATEGORY NEWS
-    else if (category) {
+}
+else{
 
-      url =
-        `https://gnews.io/api/v4/top-headlines?category=${category}` +
-        `&lang=en&country=in&max=10&page=${page}` +
-        `&apikey=${NEWS_API_KEY}`;
-    }
+if(news.length>0){
 
-    // DEFAULT NEWS
-    else {
+setTrendingNews(
+news.slice(0,5)
+);
 
-      url =
-        `https://gnews.io/api/v4/top-headlines?lang=en&country=in` +
-        `&max=10&page=${page}` +
-        `&apikey=${NEWS_API_KEY}`;
-    }
+}
 
-    try {
+}
+}
 
-      const response =
-        await fetch(url);
+catch(error){
 
-      const data =
-        await response.json();
+console.log(error);
 
-      console.log(
-        "News Data:",
-        data
-      );
+if(news.length>0){
 
-      if (
-        data &&
-        data.articles &&
-        Array.isArray(
-          data.articles
-        )
-      ) {
+setTrendingNews(
+news.slice(0,5)
+);
 
-        const updatedArticles =
-          data.articles.map(
-            (item) => ({
+}
 
-              ...item,
+}
 
-              urlToImage:
-                item.image,
+};
 
-              source: {
-                name:
-                  item.source?.name,
-              },
+   // FETCH NEWS
+const fetchNews = async () => {
 
-              rating:
-                Math.floor(
-                  Math.random() * 5
-                ) + 1,
-            })
-          );
+try{
 
-        // FIRST PAGE
-        if (page === 1) {
+let url="";
 
-          setNews(
-            updatedArticles
-          );
+if(search.trim()!==""){
 
-        }
+url=`https://gnews.io/api/v4/search?q=${search}&lang=en&country=in&max=10&apikey=${NEWS_API_KEY}`;
 
-        // INFINITE SCROLL
-        else {
+}
+else{
 
-          setNews((prev) => [
-            ...prev,
-            ...updatedArticles,
-          ]);
-        }
+url=`https://gnews.io/api/v4/top-headlines?category=${category.toLowerCase()}&lang=en&country=in&max=10&page=${page}&apikey=${NEWS_API_KEY}`;
 
-      } else {
+}
 
-        setNews([]);
-      }
+const response=
+await fetch(url);
 
-    } catch (error) {
+const data=
+await response.json();
 
-      console.log(error);
+if(
+data &&
+data.articles
+){
 
-      setNews([]);
-    }
+if(page===1){
 
-    setLoading(false);
-  };
+setNews(
+data.articles
+);
 
+}
+else{
+
+setNews(
+(prev)=>[
+...prev,
+...data.articles
+]
+);
+
+}
+
+}
+
+}
+
+catch(error){
+
+console.log(error);
+
+}
+
+};
   // INITIAL FETCH
-  useEffect(() => {
+  // MAIN NEWS + WEATHER
 
-    fetchNews();
+useEffect(() => {
 
-    fetchWeather();
+  fetchNews();
 
-  }, [page, category, channel]);
+  
 
+}, [ page,category]);
+
+
+
+// TRENDING NEWS
+
+useEffect(() => {
+
+if(news.length > 0){
+
+fetchTrendingNews();
+
+}
+
+}, [news]);
   // INFINITE SCROLL
-  useEffect(() => {
+useEffect(()=>{
 
-    const handleScroll = () => {
+const handleScroll=()=>{
 
-      if (
-        window.innerHeight +
-          document.documentElement
-            .scrollTop + 1 >=
-        document.documentElement
-          .scrollHeight &&
-        !loading
-      ) {
+const scrollTop=
 
-        setPage(
-          (prev) => prev + 1
-        );
-      }
-    };
+window.scrollY;
 
-    window.addEventListener(
-      "scroll",
-      handleScroll
-    );
+const windowHeight=
 
-    return () => {
+window.innerHeight;
 
-      window.removeEventListener(
-        "scroll",
-        handleScroll
-      );
-    };
+const fullHeight=
 
-  }, [loading]);
+document.documentElement.scrollHeight;
 
+
+if(
+
+scrollTop+
+windowHeight>=
+fullHeight-200
+
+){
+
+setPage(
+(prev)=>prev+1
+);
+
+}
+
+};
+
+window.addEventListener(
+"scroll",
+handleScroll
+);
+
+return()=>{
+
+window.removeEventListener(
+"scroll",
+handleScroll
+);
+
+};
+
+},[]);
   // BOOKMARK
   const handleBookmark = (
     item
@@ -444,120 +448,129 @@ function Dashboard() {
 
       {/* WEATHER SECTION */}
 
-      <div className="weather-card">
+      {/* TOP CONTENT */}
 
-        <h2>
-          Weather 🌤️
-        </h2>
+<div className="top-layout">
 
-        <input
-          type="text"
-          placeholder="Enter city name"
-          value={city}
-          onChange={(e) =>
-            setCity(
-              e.target.value
-            )
-          }
+  {/* WEATHER */}
 
-          onKeyDown={(e) => {
+  <div className="weather-card">
 
-            if (
-              e.key === "Enter"
-            ) {
+<h2>
+Weather 🌤️
+</h2>
 
-              fetchWeather();
-            }
-          }}
-        />
+<div className="weather-search">
 
-        <button
-          onClick={() => {
+<input
+type="text"
+placeholder="Enter city"
+value={city}
+onChange={(e)=>
+setCity(
+e.target.value
+)
+}
+/>
 
-            fetchWeather();
-          }}
-        >
-          Check Weather
-        </button>
+<button
+onClick={fetchWeather}
+>
+Check Weather
+</button>
 
-        {weather &&
-          weather.main && (
+</div>
 
-            <div>
 
-              <h3>
-                {weather.name}
-              </h3>
+{weather && weather.main && (
 
-              <p>
-                🌡️ Temperature:
-                {
-                  weather.main.temp
-                }
-                °C
-              </p>
+<div className="weather-info">
 
-              <p>
-                ☁️ Weather:
-                {
-                  weather.weather[0]
-                    .main
-                }
-              </p>
+<h3>
+{weather.name}
+</h3>
 
-              <p>
-                💨 Wind Speed:
-                {
-                  weather.wind.speed
-                }
-                km/h
-              </p>
+<p>
+🌡️ Temperature:
+{weather.main.temp}°C
+</p>
 
-            </div>
-          )}
+<p>
+☁️ Weather:
+{weather.weather[0].main}
+</p>
 
-      </div>
+<p>
+💨 Wind:
+{weather.wind.speed}
+km/h
+</p>
 
-     
-      {/* SEARCH */}
+</div>
 
-      <div className="search-section">
+)}
 
-        <input
-          type="text"
-          placeholder="Search news..."
-          value={search}
-          onChange={(e) =>
-            setSearch(
-              e.target.value
-            )
-          }
-        />
+</div>
+  {/* RIGHT SIDE */}
 
-        <button
-          onClick={() => {
+  <div className="right-content">
 
-            setPage(1);
+    {/* SEARCH */}
 
-            fetchNews();
-          }}
-        >
-          Search 🔍
-        </button>
+    <div className="search-section">
 
-        <button
-          onClick={
-            startVoiceSearch
-          }
-        >
+      <input
+      type="text"
+      placeholder="Search news..."
+      value={search}
+      onChange={(e)=>
+      setSearch(
+      e.target.value
+      )
+      }
+      />
 
-          {isListening
-            ? "🎙️ Listening..."
-            : "🎤 Voice Search"}
+     <button
+onClick={()=>{
 
-        </button>
+setPage(1);
 
-      </div>
+fetchNews();
+
+setTimeout(()=>{
+
+newsRef.current?.scrollIntoView({
+
+behavior:"smooth",
+
+block:"start"
+
+});
+
+},1000);
+
+}}
+>
+
+Search 🔍
+
+</button>
+      <button
+      onClick={startVoiceSearch}
+      >
+      {
+      isListening
+      ?
+      "🎙️ Listening..."
+      :
+      "🎤 Voice Search"
+      }
+      </button>
+
+    </div>
+
+
+
 
       {/* CHANNELS */}
 
@@ -792,10 +805,69 @@ function Dashboard() {
 
 
       </div>
+      </div> {/* right-content */}
+
+</div> {/* top-layout */}
+
+
+{/* TRENDING NEWS */}
+
+<div className="trending-section">
+
+<h2>
+🔥 Trending News
+</h2>
+
+<div className="trending-list">
+
+{
+trendingNews.length > 0 ?
+
+trendingNews.map(
+(item,index)=>(
+
+<div
+key={index}
+className="trending-item"
+>
+
+<h4>
+{item.title}
+</h4>
+
+<small>
+{item.source?.name}
+</small>
+
+</div>
+
+))
+
+:
+
+<div
+className="trending-item"
+>
+
+<h4>
+Loading Trending News...
+</h4>
+
+</div>
+
+}
+
+</div>
+
+</div>
+
 
       {/* NEWS CARDS */}
 
-      <div className="cards-container">
+      <div
+className="cards-container"
+ref={newsRef}
+>
 
         {filteredNews.length ===
         0 ? (
@@ -873,7 +945,8 @@ function Dashboard() {
                     }
 
                   </p>
-
+            
+            
                 </div>
 
               </Link>
@@ -883,6 +956,8 @@ function Dashboard() {
         )}
 
       </div>
+      
+
 
       {/* LOADING */}
 

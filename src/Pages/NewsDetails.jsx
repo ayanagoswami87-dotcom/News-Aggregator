@@ -12,7 +12,6 @@ const [comment,setComment]=useState("");
 
 const [comments,setComments]=useState([]);
 
-  const handleComment = async () => {
 const [commentMessage,setCommentMessage]=
 useState("");
 
@@ -23,18 +22,27 @@ useState(false);
 const [summary,setSummary]=
 useState([]);
 
+const [isDarkMode,setIsDarkMode]=
+useState(false);
 
 
-    const response =
-      await fetch(
-        "http://localhost:8000/comment",
-        {
-          method: "POST",
+useEffect(()=>{
+
+setIsDarkMode(
+
+localStorage.getItem(
+"theme"
+)==="dark"
+
+);
+
+},[]);
+
 
 /* COMMENT */
 
 
-const handleComment=()=>{
+const handleComment=async()=>{
 
 if(comment.trim()==="") return;
 
@@ -54,6 +62,20 @@ setCommentMessage(
 
 );
 
+// Save to backend database
+try {
+  await fetch("http://localhost:8000/comment", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      newsTitle: article?.title || "Unknown",
+      comment: comment
+    })
+  });
+} catch (err) {
+  console.log("Comment save error:", err);
+}
+
 setTimeout(()=>{
 
 setCommentMessage("");
@@ -61,21 +83,6 @@ setCommentMessage("");
 },3000);
 
 };
-const [isDarkMode,setIsDarkMode]=
-useState(false);
-
-
-useEffect(()=>{
-
-setIsDarkMode(
-
-localStorage.getItem(
-"theme"
-)==="dark"
-
-);
-
-},[]);
 
 
 /* GENERATE SUMMARY */

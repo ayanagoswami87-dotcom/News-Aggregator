@@ -16,7 +16,7 @@ import java.net.http.HttpResponse;
 public class Main {
 
     // PUT YOUR GNEWS API KEY HERE
-    static final String API_KEY = "5dabd041937d8a6936955e9ace163bd8";
+    static final String API_KEY = "0bbb23274b417aaa3d2fc10df661eff9";
 
 
     public static void main(String[] args)

@@ -13,8 +13,7 @@ function NewsDetails() {
   const [comments, setComments] = useState([]);
 
   // ADD COMMENT
-  const handleComment =
-  async () => {
+  const handleComment = async () => {
 
   if (
     comment.trim() === ""
@@ -27,7 +26,7 @@ function NewsDetails() {
 
     const response =
       await fetch(
-        "http://localhost:5000/comment",
+        "http://localhost:8000/comment",
         {
           method: "POST",
 

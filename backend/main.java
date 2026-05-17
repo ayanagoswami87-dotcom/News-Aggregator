@@ -25,14 +25,29 @@ public class Main {
         // CREATE SERVER
         HttpServer server =
                 HttpServer.create(
-                        new InetSocketAddress(8080),
+                        new InetSocketAddress(8000),
                         0
                 );
 
-        // CREATE ROUTE
+        // CREATE ROUTES
         server.createContext(
                 "/news",
                 new NewsHandler()
+        );
+
+        server.createContext(
+                "/login",
+                new LoginHandler()
+        );
+
+        server.createContext(
+                "/signup",
+                new SignupHandler()
+        );
+
+        server.createContext(
+                "/comment",
+                new CommentHandler()
         );
 
         server.setExecutor(null);
@@ -40,7 +55,7 @@ public class Main {
         server.start();
 
         System.out.println(
-                "Server running on http://localhost:8080"
+                "Server running on http://localhost:8000"
         );
     }
 
@@ -51,6 +66,35 @@ public class Main {
         public void handle(
                 HttpExchange exchange
         ) throws IOException {
+
+            // CORS HEADERS
+            exchange.getResponseHeaders().add(
+                    "Access-Control-Allow-Origin",
+                    "*"
+            );
+
+            exchange.getResponseHeaders().add(
+                    "Access-Control-Allow-Headers",
+                    "Content-Type"
+            );
+
+            exchange.getResponseHeaders().add(
+                    "Access-Control-Allow-Methods",
+                    "GET, POST, OPTIONS"
+            );
+
+            if (
+                exchange.getRequestMethod()
+                .equalsIgnoreCase("OPTIONS")
+            ) {
+
+                exchange.sendResponseHeaders(
+                    204,
+                    -1
+                );
+
+                return;
+            }
 
             try {
 
@@ -87,12 +131,9 @@ public class Main {
                 String json =
                         response.body();
 
-                // ALLOW FRONTEND ACCESS
-                exchange.getResponseHeaders().add(
-                        "Access-Control-Allow-Origin",
-                        "*"
-                );
+                byte[] jsonBytes = json.getBytes();
 
+                // ALLOW FRONTEND ACCESS
                 exchange.getResponseHeaders().add(
                         "Content-Type",
                         "application/json"
@@ -100,13 +141,13 @@ public class Main {
 
                 exchange.sendResponseHeaders(
                         200,
-                        json.length()
+                        jsonBytes.length
                 );
 
                 OutputStream os =
                         exchange.getResponseBody();
 
-                os.write(json.getBytes());
+                os.write(jsonBytes);
 
                 os.close();
 
@@ -117,15 +158,17 @@ public class Main {
                         e.getMessage() +
                         "\" }";
 
+                byte[] errorBytes = error.getBytes();
+
                 exchange.sendResponseHeaders(
                         500,
-                        error.length()
+                        errorBytes.length
                 );
 
                 OutputStream os =
                         exchange.getResponseBody();
 
-                os.write(error.getBytes());
+                os.write(errorBytes);
 
                 os.close();
             }

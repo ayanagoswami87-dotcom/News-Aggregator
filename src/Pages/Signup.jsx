@@ -2,10 +2,13 @@ import { useState } from "react";
 import { useNavigate, Link, useLocation } from "react-router-dom";
 import "./Login.css";
 
-function Login() {
+function Signup() {
 
   const navigate = useNavigate();
   const location = useLocation();
+
+  const [name, setName] =
+    useState("");
 
   const [email, setEmail] =
     useState("");
@@ -22,7 +25,7 @@ function Login() {
   const [error, setError] =
     useState("");
 
-  const handleLogin = async (e) => {
+  const handleSignup = async (e) => {
 
     e.preventDefault();
 
@@ -32,7 +35,7 @@ function Login() {
     try {
 
       const response = await fetch(
-        "http://localhost:8000/login",
+        "http://localhost:8000/signup",
         {
           method: "POST",
 
@@ -42,6 +45,7 @@ function Login() {
           },
 
           body: JSON.stringify({
+            name,
             email,
             password,
           }),
@@ -51,38 +55,25 @@ function Login() {
       const data =
         await response.json();
 
-      if(data.success === true){
+      if (response.ok && data.success !== false) {
 
-        // Store user info in localStorage
-        localStorage.setItem(
-          "user",
-          JSON.stringify({
-            name: data.name || "",
-            email: data.email || email,
-            loggedIn: true
-          })
-        );
+        // Clear any old user data so new user goes to personalization after login
+        localStorage.removeItem("userPreferences");
+        localStorage.removeItem("user");
 
-        // New user → personalization, returning user → dashboard
-        const hasPreferences =
-          localStorage.getItem("userPreferences");
-
-        if (hasPreferences) {
-          navigate("/dashboard");
-        } else {
-          navigate("/personalization");
-        }
-
-      }
-
-      else{
-
-        // Redirect to signup with message
-        navigate("/signup", {
+        // Redirect to login page with success message
+        navigate("/", {
           state: {
-            message: "Create an account first"
+            message: "Account created! Please login."
           }
         });
+
+      } else {
+
+        setError(
+          data.message ||
+          "Signup failed. Please try again."
+        );
 
       }
 
@@ -93,7 +84,7 @@ function Login() {
       console.log(error);
 
       setError(
-        "Login failed. Make sure the backend server is running on port 8000."
+        "Signup failed. Make sure the backend server is running on port 8000."
       );
 
     }
@@ -120,7 +111,7 @@ function Login() {
           </h1>
 
           <p>
-            Welcome Back
+            Create Account
           </p>
 
           <div className="subtitle-line">
@@ -134,7 +125,7 @@ function Login() {
           </div>
 
 
-          <form onSubmit={handleLogin}>
+          <form onSubmit={handleSignup}>
 
             {info && (
               <div className="auth-info">
@@ -147,6 +138,26 @@ function Login() {
                 {error}
               </div>
             )}
+
+            <div className="input-group">
+
+              <label>
+                Name
+              </label>
+
+              <input
+                type="text"
+                placeholder="Enter Name"
+                value={name}
+                onChange={(e)=>
+                setName(
+                e.target.value
+                )}
+                required
+              />
+
+            </div>
+
 
             <div className="input-group">
 
@@ -195,8 +206,8 @@ function Login() {
             >
 
               {loading
-                ? "Logging in..."
-                : "Login"
+                ? "Signing up..."
+                : "Sign Up"
               }
 
             </button>
@@ -207,15 +218,13 @@ function Login() {
 
           <div className="bottom-text">
 
-            Don't have an account?
+            Already have an account?
 
-            <Link to="/signup">
+            <Link to="/">
 
-              Sign Up
+              Login
 
             </Link>
-
-
 
           </div>
 
@@ -240,12 +249,12 @@ function Login() {
 
           <h2>
 
-            Explore
+            Join
 
             <br />
 
             <span>
-              Global News
+              Geosphere Today
             </span>
 
           </h2>
@@ -270,4 +279,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default Signup;

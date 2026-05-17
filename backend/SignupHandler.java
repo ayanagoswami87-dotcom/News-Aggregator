@@ -37,6 +37,11 @@ implements HttpHandler {
             "Content-Type"
         );
 
+        exchange.getResponseHeaders().add(
+            "Access-Control-Allow-Methods",
+            "GET, POST, OPTIONS"
+        );
+
         if (
             exchange.getRequestMethod()
             .equalsIgnoreCase("OPTIONS")
@@ -50,6 +55,39 @@ implements HttpHandler {
             return;
         }
 
+        // Only allow POST requests
+        if (
+            !exchange.getRequestMethod()
+            .equalsIgnoreCase("POST")
+        ) {
+
+            String error =
+                "{\"success\":false,\"message\":\"Method not allowed\"}";
+
+            byte[] errorBytes = error.getBytes();
+
+            exchange.getResponseHeaders().add(
+                "Content-Type",
+                "application/json"
+            );
+
+            exchange.sendResponseHeaders(
+                405,
+                errorBytes.length
+            );
+
+            OutputStream os =
+                exchange.getResponseBody();
+
+            os.write(errorBytes);
+
+            os.close();
+
+            return;
+        }
+
+        try {
+
         InputStream inputStream =
             exchange.getRequestBody();
 
@@ -62,6 +100,30 @@ implements HttpHandler {
         JSONObject json =
             new JSONObject(body);
 
+        String name =
+            json.optString("name", "").trim();
+
+        String email =
+            json.optString("email", "").trim();
+
+        String password =
+            json.optString("password", "").trim();
+
+        // Validate required fields
+        if (
+            name.isEmpty() ||
+            email.isEmpty() ||
+            password.isEmpty()
+        ) {
+
+            String response =
+                "{\"success\":false,\"message\":\"All fields are required\"}";
+
+            sendResponse(exchange, 400, response);
+
+            return;
+        }
+
         MongoDatabase database =
             MongoDB.connect();
 
@@ -69,37 +131,99 @@ implements HttpHandler {
             collection =
             database.getCollection("users");
 
+        // Check for duplicate email
+        Document existing =
+            collection.find(
+                new Document(
+                    "email",
+                    email
+                )
+            ).first();
+
+        if (existing != null) {
+
+            String response =
+                "{\"success\":false,\"message\":\"Email already registered\"}";
+
+            sendResponse(exchange, 409, response);
+
+            return;
+        }
+
         Document document =
             new Document(
                 "name",
-                json.getString("name")
+                name
             )
 
             .append(
                 "email",
-                json.getString("email")
+                email
             )
 
             .append(
                 "password",
-                json.getString("password")
+                password
             );
 
         collection.insertOne(document);
 
         String response =
-            "{\"message\":\"Signup Successful\"}";
+            "{\"success\":true,\"message\":\"Signup Successful\"}";
+
+        sendResponse(exchange, 200, response);
+
+        } catch (Exception e) {
+
+            String error =
+                "{\"success\":false,\"message\":\"Server error: " +
+                e.getMessage() + "\"}";
+
+            exchange.getResponseHeaders().add(
+                "Content-Type",
+                "application/json"
+            );
+
+            byte[] errorBytes = error.getBytes();
+
+            exchange.sendResponseHeaders(
+                500,
+                errorBytes.length
+            );
+
+            OutputStream os =
+                exchange.getResponseBody();
+
+            os.write(errorBytes);
+
+            os.close();
+        }
+    }
+
+    private void sendResponse(
+        HttpExchange exchange,
+        int statusCode,
+        String response
+    ) throws IOException {
+
+        exchange.getResponseHeaders().add(
+            "Content-Type",
+            "application/json"
+        );
+
+        byte[] responseBytes =
+            response.getBytes();
 
         exchange.sendResponseHeaders(
-            200,
-            response.length()
+            statusCode,
+            responseBytes.length
         );
 
         OutputStream output =
             exchange.getResponseBody();
 
         output.write(
-            response.getBytes()
+            responseBytes
         );
 
         output.close();

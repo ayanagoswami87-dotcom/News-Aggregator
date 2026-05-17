@@ -37,6 +37,11 @@ implements HttpHandler {
             "Content-Type"
         );
 
+        exchange.getResponseHeaders().add(
+            "Access-Control-Allow-Methods",
+            "GET, POST, OPTIONS"
+        );
+
         if (
             exchange.getRequestMethod()
             .equalsIgnoreCase("OPTIONS")
@@ -49,6 +54,39 @@ implements HttpHandler {
 
             return;
         }
+
+        // Only allow POST requests
+        if (
+            !exchange.getRequestMethod()
+            .equalsIgnoreCase("POST")
+        ) {
+
+            String error =
+                "{\"success\":false,\"message\":\"Method not allowed\"}";
+
+            byte[] errorBytes = error.getBytes();
+
+            exchange.getResponseHeaders().add(
+                "Content-Type",
+                "application/json"
+            );
+
+            exchange.sendResponseHeaders(
+                405,
+                errorBytes.length
+            );
+
+            OutputStream os =
+                exchange.getResponseBody();
+
+            os.write(errorBytes);
+
+            os.close();
+
+            return;
+        }
+
+        try {
 
         InputStream inputStream =
             exchange.getRequestBody();
@@ -63,10 +101,24 @@ implements HttpHandler {
             new JSONObject(body);
 
         String email =
-            json.getString("email");
+            json.optString("email", "").trim();
 
         String password =
-            json.getString("password");
+            json.optString("password", "").trim();
+
+        // Validate required fields
+        if (
+            email.isEmpty() ||
+            password.isEmpty()
+        ) {
+
+            String response =
+                "{\"success\":false,\"message\":\"Email and password are required\"}";
+
+            sendResponse(exchange, 400, response);
+
+            return;
+        }
 
         MongoDatabase database =
             MongoDB.connect();
@@ -90,8 +142,18 @@ implements HttpHandler {
 
         if (user != null) {
 
+            // Return user name and email on success
+            String userName =
+                user.getString("name");
+
+            if (userName == null) {
+                userName = "";
+            }
+
             response =
-                "{\"success\":true,\"message\":\"Login Successful\"}";
+                "{\"success\":true,\"message\":\"Login Successful\"" +
+                ",\"name\":\"" + userName.replace("\"", "\\\"") + "\"" +
+                ",\"email\":\"" + email.replace("\"", "\\\"") + "\"}";
 
         } else {
 
@@ -99,16 +161,59 @@ implements HttpHandler {
                 "{\"success\":false,\"message\":\"Invalid Credentials\"}";
         }
 
+        sendResponse(exchange, 200, response);
+
+        } catch (Exception e) {
+
+            String error =
+                "{\"success\":false,\"message\":\"Server error: " +
+                e.getMessage() + "\"}";
+
+            exchange.getResponseHeaders().add(
+                "Content-Type",
+                "application/json"
+            );
+
+            byte[] errorBytes = error.getBytes();
+
+            exchange.sendResponseHeaders(
+                500,
+                errorBytes.length
+            );
+
+            OutputStream os =
+                exchange.getResponseBody();
+
+            os.write(errorBytes);
+
+            os.close();
+        }
+    }
+
+    private void sendResponse(
+        HttpExchange exchange,
+        int statusCode,
+        String response
+    ) throws IOException {
+
+        exchange.getResponseHeaders().add(
+            "Content-Type",
+            "application/json"
+        );
+
+        byte[] responseBytes =
+            response.getBytes();
+
         exchange.sendResponseHeaders(
-            200,
-            response.length()
+            statusCode,
+            responseBytes.length
         );
 
         OutputStream output =
             exchange.getResponseBody();
 
         output.write(
-            response.getBytes()
+            responseBytes
         );
 
         output.close();

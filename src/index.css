@@ -1,13 +1,17 @@
 body {
   margin: 0;
   padding: 0;
-}
-/* Personalization.css */
-
-body {
-  margin: 0;
-  padding: 0;
   font-family: Arial, sans-serif;
+}
+
+/* Hide scrollbars globally while keeping scroll */
+*{
+  scrollbar-width: none;          /* Firefox */
+  -ms-overflow-style: none;       /* IE / Edge */
+}
+
+*::-webkit-scrollbar{
+  display: none;                  /* Chrome, Safari, Opera */
 }
 
 /* LIGHT MODE */
@@ -24,125 +28,4 @@ body {
   color: white;
   min-height: 100vh;
   transition: 0.3s;
-}
-
-/* HEADER */
-header {
-  text-align: center;
-  font-size: 36px;
-  font-weight: bold;
-  padding: 30px 20px;
-}
-
-/* CONTAINER */
-.personalization-container {
-  max-width: 700px;
-  margin: auto;
-  background: white;
-  padding: 30px;
-  border-radius: 15px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-}
-
-.dark-mode .personalization-container {
-  background: #1e1e1e;
-}
-
-/* HEADINGS */
-.personalization-container h2 {
-  margin-top: 25px;
-  margin-bottom: 15px;
-  font-size: 22px;
-}
-
-/* CATEGORIES */
-.categories {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 15px;
-}
-
-.categories label {
-  background: #e9ecef;
-  padding: 10px 15px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-.categories label:hover {
-  background: #d6d8db;
-}
-
-.dark-mode .categories label {
-  background: #2a2a2a;
-}
-
-.dark-mode .categories label:hover {
-  background: #3a3a3a;
-}
-
-/* CHECKBOX */
-.categories input {
-  margin-right: 8px;
-}
-
-/* SELECT */
-.personalization-container select {
-  width: 100%;
-  padding: 12px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  font-size: 16px;
-  margin-top: 10px;
-}
-
-.dark-mode .personalization-container select {
-  background: #2a2a2a;
-  color: white;
-  border: 1px solid #444;
-}
-
-/* TEXT */
-.personalization-container p {
-  margin-top: 8px;
-  font-size: 15px;
-  color: gray;
-}
-
-.dark-mode .personalization-container p {
-  color: #ccc;
-}
-
-/* BUTTON */
-.personalization-container button {
-  width: 100%;
-  padding: 14px;
-  border: none;
-  border-radius: 10px;
-  background: #007bff;
-  color: white;
-  font-size: 17px;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-.personalization-container button:hover {
-  background: #0056b3;
-}
-
-/* RESPONSIVE */
-@media (max-width: 768px) {
-  .personalization-container {
-    width: 90%;
-    padding: 20px;
-  }
-
-  header {
-    font-size: 28px;
-  }
-
-  .categories {
-    flex-direction: column;
-  }
 }

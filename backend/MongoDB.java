@@ -12,18 +12,20 @@ public class MongoDB {
     private static final String DB_NAME =
         "newsAggregatorDB";
 
+    private static MongoClient client = null;
+
     public static MongoDatabase connect() {
 
-        MongoClient client =
-            MongoClients.create(URL);
+        if (client == null) {
 
-        MongoDatabase database =
-            client.getDatabase(DB_NAME);
+            client =
+                MongoClients.create(URL);
 
-        System.out.println(
-            "MongoDB Connected"
-        );
+            System.out.println(
+                "MongoDB Connected"
+            );
+        }
 
-        return database;
+        return client.getDatabase(DB_NAME);
     }
 }

@@ -1,141 +1,316 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import "./Personalization.css";
 
 const Personalization = () => {
 
-  // STATES
-  const [categories, setCategories] = useState([]);
-  const [theme, setTheme] = useState("Light Mode");
+  const navigate = useNavigate();
 
-  const [viewMode, setViewMode] = useState("detailed");
-  const [fontSize, setFontSize] = useState("medium");
-  const [layout, setLayout] = useState("grid");
+  // STATES
+  const [themeColor, setThemeColor] = useState("orange");
+  const [interfaceTheme, setInterfaceTheme] = useState("light");
+  const [categories, setCategories] = useState([]);
+  const [language, setLanguage] = useState("en");
+
+  // COLOR OPTIONS
+  const colorOptions = [
+    { name: "orange", color: "#ff7b00" },
+    { name: "red", color: "#e91e63" },
+    { name: "blue", color: "#2196f3" },
+    { name: "purple", color: "#9c27b0" },
+    { name: "green", color: "#4caf50" },
+  ];
+
+  // CATEGORY OPTIONS
+  const categoryOptions = [
+    { name: "Technology", icon: "💻" },
+    { name: "Sports", icon: "⚽" },
+    { name: "Business", icon: "💼" },
+    { name: "Health", icon: "❤️" },
+    { name: "Entertainment", icon: "🎬" },
+    { name: "Science", icon: "🔬" },
+  ];
 
   // LOAD SAVED PREFERENCES
   useEffect(() => {
-    const saved = JSON.parse(localStorage.getItem("userPreferences"));
-
-    console.log("Loaded Preferences:", saved); // DEBUG
+    const saved = JSON.parse(
+      localStorage.getItem("userPreferences")
+    );
 
     if (saved) {
+      setThemeColor(saved.themeColor ?? "orange");
+      setInterfaceTheme(saved.interfaceTheme ?? "light");
       setCategories(saved.categories ?? []);
-      setTheme(saved.theme ?? "Light Mode");
-      setViewMode(saved.viewMode ?? "detailed");
-      setFontSize(saved.fontSize ?? "medium");
-      setLayout(saved.layout ?? "grid");
+      setLanguage(saved.language ?? "en");
     }
   }, []);
 
-  // CATEGORY SELECT (FIXED - no stale state)
-  const handleCategoryChange = (category) => {
+  // CATEGORY TOGGLE
+  const toggleCategory = (cat) => {
     setCategories((prev) => {
-      if (prev.includes(category)) {
-        return prev.filter(item => item !== category);
+      if (prev.includes(cat)) {
+        return prev.filter((c) => c !== cat);
       } else {
-        return [...prev, category];
+        return [...prev, cat];
       }
     });
   };
 
-  // SAVE (FORCE FRESH SAVE)
-  
-const savePreferences = () => {
-  const preferences = {
-    categories,
-    theme,
-    viewMode,
-    fontSize,
-    layout,
+  // SAVE
+  const savePreferences = () => {
+    const preferences = {
+      themeColor,
+      interfaceTheme,
+      categories,
+      language,
+      // Keep backward compat with old keys
+      theme: interfaceTheme === "dark" ? "Dark Mode" : "Light Mode",
+      viewMode: "detailed",
+      fontSize: "medium",
+      layout: "grid",
+    };
+
+    localStorage.setItem(
+      "userPreferences",
+      JSON.stringify(preferences)
+    );
+
+    navigate("/dashboard");
   };
 
-  console.log("Saving Preferences:", preferences);
-
-  // ✅ Directly save (no removeItem)
-  localStorage.setItem("userPreferences", JSON.stringify(preferences));
-
-  alert("Preferences Saved!");
-
-  // ✅ Better navigation (no reload issue)
-  window.location.assign("/dashboard");
-};
   return (
-    
-    <div className={theme === "Dark Mode" ? "dark-mode" : "light-mode"}>
-   
-    
+    <div className="pz-page">
 
-      <header>Hi, help us know you better.....</header>
+      {/* DECORATIVE BLOBS */}
+      <div className="pz-blob pz-blob-1"></div>
+      <div className="pz-blob pz-blob-2"></div>
 
-      <div className="personalization-container">
+      <div className="pz-card">
 
-        {/* CATEGORIES */}
-        <h2>Select Favourite Categories</h2>
-        <div className="categories">
-
-          {[
-            "Technology",
-            "Sports",
-            "Business",
-            "Health",
-
-            "Entertainment",
-            "Science",
-            
-          ].map((cat, index) => (
-            <label key={index}>
-              <input
-                type="checkbox"
-                checked={categories.includes(cat)}
-                onChange={() => handleCategoryChange(cat.toLowerCase())}
-                
-              />
-              {cat}
-            </label>
-          ))}
-
+        {/* HEADER */}
+        <div className="pz-header">
+          <h1>PERSONALIZATION</h1>
+          <span className="pz-sparkle">✦</span>
         </div>
 
-        {/* THEME */}
-        <h2>Choose Theme</h2>
-        <select value={theme} onChange={(e) => setTheme(e.target.value)}>
-          <option value="Light Mode">Light Mode</option>
-          <option value="Dark Mode">Dark Mode</option>
-        </select>
-        <p>Selected: {theme}</p>
+        {/* THEME COLOR */}
+        <div className="pz-section">
+          <div className="pz-section-title">
+            <span className="pz-icon">🎨</span>
+            <div>
+              <h2>Theme Color</h2>
+              <p>Personalize your dashboard style.</p>
+            </div>
+          </div>
 
-        {/* READING MODE */}
-        <h2>Reading Mode</h2>
-        <select value={viewMode} onChange={(e) => setViewMode(e.target.value)}>
-          <option value="detailed">Detailed</option>
-          <option value="compact">Compact</option>
-        </select>
-        <p>Selected: {viewMode}</p>
+          <div className="pz-colors">
+            {colorOptions.map((c) => (
+              <button
+                key={c.name}
+                className={`pz-color-btn ${
+                  themeColor === c.name ? "pz-color-active" : ""
+                }`}
+                style={{ background: c.color }}
+                onClick={() => setThemeColor(c.name)}
+                aria-label={c.name}
+              >
+                {themeColor === c.name && (
+                  <span className="pz-color-check">✓</span>
+                )}
+              </button>
+            ))}
+          </div>
+        </div>
 
-        {/* FONT SIZE */}
-        <h2>Font Size</h2>
-        <select value={fontSize} onChange={(e) => setFontSize(e.target.value)}>
-          <option value="small">Small</option>
-          <option value="medium">Medium</option>
-          <option value="large">Large</option>
-        </select>
-        <p>Selected: {fontSize}</p>
+        <hr className="pz-divider" />
 
-        {/* LAYOUT */}
-        <h2>Layout Style</h2>
-        <select value={layout} onChange={(e) => setLayout(e.target.value)}>
-          <option value="grid">Grid</option>
-          <option value="list">List</option>
-        </select>
-        <p>Selected: {layout}</p>
-        <br /><br />
+        {/* INTERFACE THEME */}
+        <div className="pz-section">
+          <div className="pz-section-title">
+            <span className="pz-icon">🖥️</span>
+            <div>
+              <h2>Interface Theme</h2>
+              <p>Select your preferred UI theme.</p>
+            </div>
+          </div>
 
-        <button onClick={savePreferences}>
-          Save Preferences
+          <div className="pz-themes">
+            {/* Light */}
+            <div
+              className={`pz-theme-card ${
+                interfaceTheme === "light" ? "pz-theme-active" : ""
+              }`}
+              onClick={() => setInterfaceTheme("light")}
+            >
+              <div className="pz-theme-preview pz-preview-light">
+                <div className="pz-preview-sidebar">
+                  <div className="pz-preview-line"></div>
+                  <div className="pz-preview-line short"></div>
+                  <div className="pz-preview-line"></div>
+                  <div className="pz-preview-line short"></div>
+                </div>
+                <div className="pz-preview-content">
+                  <div className="pz-preview-topbar">
+                    <div className="pz-preview-toggle"></div>
+                  </div>
+                  <div className="pz-preview-body">
+                    <div className="pz-preview-block"></div>
+                    <div className="pz-preview-block"></div>
+                  </div>
+                </div>
+              </div>
+              {interfaceTheme === "light" && (
+                <span className="pz-theme-check">✓</span>
+              )}
+              <span className={`pz-theme-label ${
+                interfaceTheme === "light" ? "pz-label-active" : ""
+              }`}>Light Theme</span>
+            </div>
+
+            {/* Dark */}
+            <div
+              className={`pz-theme-card ${
+                interfaceTheme === "dark" ? "pz-theme-active" : ""
+              }`}
+              onClick={() => setInterfaceTheme("dark")}
+            >
+              <div className="pz-theme-preview pz-preview-dark">
+                <div className="pz-preview-sidebar">
+                  <div className="pz-preview-line"></div>
+                  <div className="pz-preview-line short"></div>
+                  <div className="pz-preview-line"></div>
+                  <div className="pz-preview-line short"></div>
+                </div>
+                <div className="pz-preview-content">
+                  <div className="pz-preview-topbar">
+                    <div className="pz-preview-toggle"></div>
+                  </div>
+                  <div className="pz-preview-body">
+                    <div className="pz-preview-block"></div>
+                    <div className="pz-preview-block"></div>
+                  </div>
+                </div>
+              </div>
+              {interfaceTheme === "dark" && (
+                <span className="pz-theme-check">✓</span>
+              )}
+              <span className={`pz-theme-label ${
+                interfaceTheme === "dark" ? "pz-label-active" : ""
+              }`}>Dark Theme</span>
+            </div>
+
+            {/* System */}
+            <div
+              className={`pz-theme-card ${
+                interfaceTheme === "system" ? "pz-theme-active" : ""
+              }`}
+              onClick={() => setInterfaceTheme("system")}
+            >
+              <div className="pz-theme-preview pz-preview-system">
+                <div className="pz-preview-sidebar">
+                  <div className="pz-preview-line"></div>
+                  <div className="pz-preview-line short"></div>
+                  <div className="pz-preview-line"></div>
+                  <div className="pz-preview-line short"></div>
+                </div>
+                <div className="pz-preview-content">
+                  <div className="pz-preview-topbar">
+                    <div className="pz-preview-toggle"></div>
+                  </div>
+                  <div className="pz-preview-body">
+                    <div className="pz-preview-block"></div>
+                    <div className="pz-preview-block"></div>
+                  </div>
+                </div>
+              </div>
+              {interfaceTheme === "system" && (
+                <span className="pz-theme-check">✓</span>
+              )}
+              <span className={`pz-theme-label ${
+                interfaceTheme === "system" ? "pz-label-active" : ""
+              }`}>System</span>
+            </div>
+          </div>
+        </div>
+
+        <hr className="pz-divider" />
+
+        {/* FAVORITE CATEGORIES */}
+        <div className="pz-section">
+          <div className="pz-section-title">
+            <span className="pz-icon">⭐</span>
+            <div>
+              <h2>Favorite Categories</h2>
+              <p>Select topics you enjoy reading.</p>
+            </div>
+          </div>
+
+          <div className="pz-categories">
+            {categoryOptions.map((cat) => (
+              <button
+                key={cat.name}
+                className={`pz-cat-btn ${
+                  categories.includes(cat.name.toLowerCase())
+                    ? "pz-cat-active"
+                    : ""
+                }`}
+                onClick={() =>
+                  toggleCategory(cat.name.toLowerCase())
+                }
+              >
+                <span>{cat.icon}</span>
+                {cat.name}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <hr className="pz-divider" />
+
+        {/* LANGUAGE */}
+        <div className="pz-section">
+          <div className="pz-section-title">
+            <span className="pz-icon">🌐</span>
+            <div>
+              <h2>Language</h2>
+              <p>Select platform language.</p>
+            </div>
+          </div>
+
+          <div className="pz-language">
+            <button
+              className={`pz-lang-btn ${
+                language === "en" ? "pz-lang-active" : ""
+              }`}
+              onClick={() => setLanguage("en")}
+            >
+              <span className="pz-flag">🇺🇸</span>
+              English
+            </button>
+
+            <button
+              className={`pz-lang-btn ${
+                language === "hi" ? "pz-lang-active" : ""
+              }`}
+              onClick={() => setLanguage("hi")}
+            >
+              <span className="pz-flag">🇮🇳</span>
+              हिन्दी
+            </button>
+          </div>
+        </div>
+
+        {/* SAVE BUTTON */}
+        <button
+          className="pz-save-btn"
+          onClick={savePreferences}
+        >
+          💾 Save Preferences
         </button>
 
       </div>
     </div>
   );
-};      
+};
 
 export default Personalization;

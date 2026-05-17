@@ -1,19 +1,11 @@
-// Dashboard.jsx
-
-import React, {
-  useEffect,
-  useState,
-} from "react";
-
-import {
-  Link,
-} from "react-router-dom";
-
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./Dashboard.css";
 
 function Dashboard() {
 
-  // STATES
+  const navigate = useNavigate();
+
   const [isDarkMode, setIsDarkMode] =
     useState(false);
 
@@ -23,17 +15,15 @@ function Dashboard() {
   const [news, setNews] =
     useState([]);
 
+
   const [page, setPage] =
     useState(1);
 
   const [sortBy, setSortBy] =
     useState("latest");
 
-  const [isListening, setIsListening] =
+  const [loading, setLoading] =
     useState(false);
-
-  const [bookmarks, setBookmarks] =
-    useState([]);
 
   const [category, setCategory] =
     useState("");
@@ -41,32 +31,31 @@ function Dashboard() {
   const [channel, setChannel] =
     useState("");
 
-  const [loading, setLoading] =
+  const [isListening, setIsListening] =
     useState(false);
 
-  // WEATHER STATES
-  const [weather, setWeather] =
-    useState(null);
+  const [bookmarks, setBookmarks] =
+    useState([]);
 
-  const [city, setCity] =
-    useState("Dhemaji");
-
-  // API KEYS
-  const NEWS_API_KEY =
+  const API_KEY =
     "ed2f7aec665595d63a813ada95c7014d";
 
-  const WEATHER_API_KEY =
-    "a3a17aa5e90e1f7f7469785177d1dce5";
+
 
   // DARK MODE
+
   const toggleMode = () => {
 
     setIsDarkMode(
       !isDarkMode
     );
+
   };
 
+
+
   // VOICE SEARCH
+
   const startVoiceSearch = () => {
 
     const SpeechRecognition =
@@ -76,7 +65,7 @@ function Dashboard() {
     if (!SpeechRecognition) {
 
       alert(
-        "Voice Search not supported"
+        "Voice search not supported"
       );
 
       return;
@@ -91,133 +80,55 @@ function Dashboard() {
 
     setIsListening(true);
 
-    recognition.onresult = (
-      event
-    ) => {
+    recognition.onresult =
+      (event) => {
 
-      setSearch(
-        event.results[0][0]
-          .transcript
-      );
+        setSearch(
+          event.results[0][0]
+            .transcript
+        );
 
-      setIsListening(false);
-    };
+        setIsListening(false);
 
-    recognition.onerror = () => {
+      };
 
-      setIsListening(false);
-    };
+    recognition.onerror =
+      () => {
+
+        setIsListening(false);
+
+      };
   };
 
-  // FETCH WEATHER
-  const fetchWeather =
-    async () => {
 
-      // EMPTY INPUT
-      if (!city.trim()) {
-
-        alert(
-          "Please enter city name"
-        );
-
-        return;
-      }
-
-      try {
-
-        const response =
-          await fetch(
-            `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(
-              city
-            )}&appid=${WEATHER_API_KEY}&units=metric`
-          );
-
-        const data =
-          await response.json();
-
-        console.log(
-          "Weather Data:",
-          data
-        );
-
-        // INVALID CITY
-        if (
-          data.cod === "404" ||
-          data.cod === 404
-        ) {
-
-          alert(
-            "City not found"
-          );
-
-          return;
-        }
-
-        // INVALID API KEY
-        if (
-          data.cod === 401
-        ) {
-
-          alert(
-            "Invalid Weather API Key"
-          );
-
-          return;
-        }
-
-        setWeather(data);
-
-      } catch (error) {
-
-        console.log(error);
-
-        alert(
-          "Weather API Error"
-        );
-      }
-    };
 
   // FETCH NEWS
+
   const fetchNews = async () => {
 
     setLoading(true);
 
     let url = "";
 
-    // SEARCH NEWS
-    if (search) {
+    if (channel) {
 
       url =
-        `https://gnews.io/api/v4/search?q=${search}` +
-        `&lang=en&country=in&max=10&page=${page}` +
-        `&apikey=${NEWS_API_KEY}`;
+        `https://gnews.io/api/v4/search?q=${channel}&lang=en&country=in&max=10&page=${page}&apikey=${API_KEY}`;
+
     }
 
-    // CHANNEL NEWS
-    else if (channel) {
-
-      url =
-        `https://gnews.io/api/v4/search?q=${channel}` +
-        `&lang=en&country=in&max=10&page=${page}` +
-        `&apikey=${NEWS_API_KEY}`;
-    }
-
-    // CATEGORY NEWS
     else if (category) {
 
       url =
-        `https://gnews.io/api/v4/top-headlines?category=${category}` +
-        `&lang=en&country=in&max=10&page=${page}` +
-        `&apikey=${NEWS_API_KEY}`;
+        `https://gnews.io/api/v4/top-headlines?category=${category}&lang=en&country=in&max=10&page=${page}&apikey=${API_KEY}`;
+
     }
 
-    // DEFAULT NEWS
     else {
 
       url =
-        `https://gnews.io/api/v4/top-headlines?lang=en&country=in` +
-        `&max=10&page=${page}` +
-        `&apikey=${NEWS_API_KEY}`;
+        `https://gnews.io/api/v4/top-headlines?lang=en&country=in&max=10&page=${page}&apikey=${API_KEY}`;
+
     }
 
     try {
@@ -228,20 +139,9 @@ function Dashboard() {
       const data =
         await response.json();
 
-      console.log(
-        "News Data:",
-        data
-      );
+      if (data.articles) {
 
-      if (
-        data &&
-        data.articles &&
-        Array.isArray(
-          data.articles
-        )
-      ) {
-
-        const updatedArticles =
+        const updatedNews =
           data.articles.map(
             (item) => ({
 
@@ -252,76 +152,91 @@ function Dashboard() {
 
               source: {
                 name:
-                  item.source?.name,
+                  item.source?.name
               },
 
               rating:
                 Math.floor(
                   Math.random() * 5
-                ) + 1,
+                ) + 1
+
             })
           );
 
-        // FIRST PAGE
         if (page === 1) {
 
           setNews(
-            updatedArticles
+            updatedNews
           );
 
         }
 
-        // INFINITE SCROLL
         else {
 
-          setNews((prev) => [
-            ...prev,
-            ...updatedArticles,
-          ]);
+          setNews(
+            (prev) => [
+              ...prev,
+              ...updatedNews
+            ]
+          );
+
         }
 
-      } else {
-
-        setNews([]);
       }
 
-    } catch (error) {
+    }
+
+    catch(error){
 
       console.log(error);
 
-      setNews([]);
     }
 
     setLoading(false);
+
   };
 
-  // INITIAL FETCH
+
+
   useEffect(() => {
 
     fetchNews();
 
-    fetchWeather();
+  },[
+    page,
+    category,
+    channel
+  ]);
 
-  }, [page, category, channel]);
+
 
   // INFINITE SCROLL
+
   useEffect(() => {
 
-    const handleScroll = () => {
+    const handleScroll =
+      () => {
 
-      if (
+      if(
+
         window.innerHeight +
-          document.documentElement
-            .scrollTop + 1 >=
-        document.documentElement
-          .scrollHeight &&
-        !loading
-      ) {
+        document.documentElement.scrollTop + 1
+
+        >=
+
+        document.documentElement.scrollHeight
+
+        && !loading
+
+      ){
 
         setPage(
-          (prev) => prev + 1
+          (prev)=>
+          prev+1
         );
+
       }
+
     };
 
     window.addEventListener(
@@ -329,608 +244,384 @@ function Dashboard() {
       handleScroll
     );
 
-    return () => {
+    return ()=>{
 
       window.removeEventListener(
         "scroll",
         handleScroll
       );
+
     };
 
-  }, [loading]);
+  },[loading]);
+
+
 
   // BOOKMARK
-  const handleBookmark = (
-    item
-  ) => {
 
-    const alreadyBookmarked =
+  const handleBookmark =
+    (item)=>{
+
+      const exists =
       bookmarks.find(
-        (bookmark) =>
-          bookmark.url ===
-          item.url
+
+        bookmark=>
+
+        bookmark.url===item.url
+
       );
 
-    if (alreadyBookmarked) {
+      if(exists){
+
+        alert(
+          "Already bookmarked"
+        );
+
+        return;
+
+      }
+
+      setBookmarks(
+        [
+          ...bookmarks,
+          item
+        ]
+      );
 
       alert(
-        "Already Bookmarked"
+        "News bookmarked"
       );
 
-      return;
-    }
-
-    setBookmarks([
-      ...bookmarks,
-      item,
-    ]);
-
-    alert(
-      "News Bookmarked"
-    );
   };
 
-  // FILTER NEWS
-  const filteredNews = news
 
-    .filter((item) =>
+
+  // FILTER + SORT
+
+  const filteredNews =
+    news
+
+    .filter(
+
+      item=>
+
       item.title
-        ?.toLowerCase()
-        .includes(
-          search.toLowerCase()
-        )
+      ?.toLowerCase()
+
+      .includes(
+
+        search
+        .toLowerCase()
+
+      )
+
     )
 
-    .sort((a, b) => {
+    .sort((a,b)=>{
 
-      if (
-        sortBy === "ratings"
-      ) {
+      if(
+        sortBy==="ratings"
+      ){
 
-        return (
-          b.rating - a.rating
+        return(
+          b.rating-
+          a.rating
         );
+
       }
 
       return 0;
+
     });
+
+
 
   return (
 
-    <div
-      className={`dashboard ${
-        isDarkMode
-          ? "dark-mode"
-          : "light-mode"
-      }`}
-    >
-
-      {/* HEADER */}
-
-      <h1 className="header">
-        Geosphere 🌏
-      </h1>
-       {/* TOPBAR */}
-
-      <div className="topbar">
-
-        <h3>
-          Welcome to the News Dashboard 👋
-        </h3>
-
-        <div className="topbar-actions">
-
-          <button
-            className="mode-btn"
-            onClick={toggleMode}
-          >
+<div
+className={`dashboard ${
+isDarkMode
+?"dark-mode"
+:"light-mode"
+}`}>
 
-            {isDarkMode
-              ? "☀️ Light Mode"
-              : "🌙 Dark Mode"}
-
-          </button>
-
-          <Link to="/">
-            <button className="logout-btn">
-              Logout
-            </button>
-          </Link>
-
-        </div>
-
-      </div>
-
-
-      {/* WEATHER SECTION */}
-
-      <div className="weather-card">
-
-        <h2>
-          Weather 🌤️
-        </h2>
-
-        <input
-          type="text"
-          placeholder="Enter city name"
-          value={city}
-          onChange={(e) =>
-            setCity(
-              e.target.value
-            )
-          }
-
-          onKeyDown={(e) => {
+<h1>
+Geosphere 🌏
+</h1>
 
-            if (
-              e.key === "Enter"
-            ) {
 
-              fetchWeather();
-            }
-          }}
-        />
 
-        <button
-          onClick={() => {
+<div className="topbar">
 
-            fetchWeather();
-          }}
-        >
-          Check Weather
-        </button>
+<button
+onClick={
+toggleMode
+}
+>
 
-        {weather &&
-          weather.main && (
+{isDarkMode
+?
+"☀️ Light"
+:
+"🌙 Dark"
+}
 
-            <div>
+</button>
 
-              <h3>
-                {weather.name}
-              </h3>
 
-              <p>
-                🌡️ Temperature:
-                {
-                  weather.main.temp
-                }
-                °C
-              </p>
 
-              <p>
-                ☁️ Weather:
-                {
-                  weather.weather[0]
-                    .main
-                }
-              </p>
+<button
+onClick={() => {
+localStorage.removeItem("user");
+navigate("/");
+}}
+>
 
-              <p>
-                💨 Wind Speed:
-                {
-                  weather.wind.speed
-                }
-                km/h
-              </p>
+Logout
 
-            </div>
-          )}
+</button>
 
-      </div>
+</div>
 
-     
-      {/* SEARCH */}
 
-      <div className="search-section">
 
-        <input
-          type="text"
-          placeholder="Search news..."
-          value={search}
-          onChange={(e) =>
-            setSearch(
-              e.target.value
-            )
-          }
-        />
+<div className="search-section">
 
-        <button
-          onClick={() => {
+<input
 
-            setPage(1);
+type="text"
 
-            fetchNews();
-          }}
-        >
-          Search 🔍
-        </button>
+placeholder=
+"Search News"
 
-        <button
-          onClick={
-            startVoiceSearch
-          }
-        >
+value={search}
 
-          {isListening
-            ? "🎙️ Listening..."
-            : "🎤 Voice Search"}
+onChange={
+(e)=>
 
-        </button>
+setSearch(
+e.target.value
+)
 
-      </div>
+}
 
-      {/* CHANNELS */}
+/>
 
-      <div className="channels">
 
-        <button
-          onClick={() => {
 
-            setPage(1);
+<button>
 
-            setSearch("");
+Search 🔍
 
-            setCategory("");
+</button>
 
-            setChannel("BBC");
-          }}
-        >
-          BBC News
-        </button>
 
-        <button
-          onClick={() => {
 
-            setPage(1);
+<button
+onClick=
+{
+startVoiceSearch
+}
+>
 
-            setSearch("");
+{
+isListening
+?
 
-            setCategory("");
+"🎙 Listening..."
 
-            setChannel("CNN");
-          }}
-        >
-          CNN
-        </button>
+:
 
-        <button
-          onClick={() => {
+"🎤 Voice"
+}
 
-            setPage(1);
+</button>
 
-            setSearch("");
+</div>
 
-            setCategory("");
 
-            setChannel(
-              "The Hindu"
-            );
-          }}
-        >
-          The Hindu
-        </button>
-         <button
-          onClick={() => {
 
-            setPage(1);
+<div className="categories">
 
-            setSearch("");
+<button
+onClick={()=>{
+setPage(1);
+setCategory(
+"technology"
+);
+}}
+>
+Technology
+</button>
 
-            setCategory("");
+<button
+onClick={()=>{
+setPage(1);
+setCategory(
+"sports"
+);
+}}
+>
+Sports
+</button>
 
-            setChannel(
-              " Times of India"
-            );
-          }}
-        >
-          The Times of India
-        </button>
-         <button
-          onClick={() => {
+<button
+onClick={()=>{
+setPage(1);
+setCategory(
+"business"
+);
+}}
+>
+Business
+</button>
 
-            setPage(1);
+</div>
 
-            setSearch("");
 
-            setCategory("");
 
-            setChannel(
-              "NDTV"
-            );
-          }}
-        >
-          NDTV
-        </button>
-         <button
-          onClick={() => {
+<div className=
+"filters">
 
-            setPage(1);
+<select
+value={sortBy}
+onChange={(e)=>
+setSortBy(
+e.target.value
+)}
+>
 
-            setSearch("");
+<option
+value="latest"
+>
+Latest
+</option>
 
-            setCategory("");
+<option
+value="ratings"
+>
+Ratings
+</option>
 
-            setChannel(
-              "Financial Express"
-            );
-          }}
-        >
-          Financial Express
-        </button>
+</select>
 
+</div>
 
-      </div>
 
-      {/* FILTER */}
 
-      <div className="filters">
+<div className=
+"cards-container">
 
-        <select
-          value={sortBy}
-          onChange={(e) =>
-            setSortBy(
-              e.target.value
-            )
-          }
-        >
+{
 
-          <option value="latest">
-            Latest
-          </option>
+filteredNews.map(
 
-          <option value="ratings">
-            Ratings
-          </option>
+(item,index)=>(
 
-        </select>
+<div
 
-      </div>
+className="card"
 
-      {/* CATEGORIES */}
+key={index}
 
-      <div className="categories">
+onClick={()=>
 
-        <button
-          onClick={() => {
+navigate(
+"/news-details",
+{ state: item }
+)
 
-            setPage(1);
+}
 
-            setSearch("");
+>
 
-            setChannel("");
+<button
 
-            setCategory(
-              "technology"
-            );
-          }}
-        >
-          Technology
-        </button>
+className=
+"bookmark-btn"
 
-        <button
-          onClick={() => {
+onClick={(e)=>{
 
-            setPage(1);
+e.stopPropagation();
 
-            setSearch("");
+handleBookmark(
+item
+);
 
-            setChannel("");
+}}
 
-            setCategory(
-              "sports"
-            );
-          }}
-        >
-          Sports
-        </button>
+>
 
-        <button
-          onClick={() => {
+🔖
 
-            setPage(1);
+</button>
 
-            setSearch("");
 
-            setChannel("");
 
-            setCategory(
-              "business"
-            );
-          }}
-        >
-          Business
-        </button>
-         <button
-          onClick={() => {
+<img
 
-            setPage(1);
+src={
 
-            setSearch("");
+item.urlToImage ||
 
-            setChannel("");
+"https://via.placeholder.com/300"
 
-            setCategory(
-              "health"
-            );
-          }}
-        >
-            Health
-        </button>
-         <button
-          onClick={() => {
+}
 
-            setPage(1);
+alt="news"
 
-            setSearch("");
+/>
 
-            setChannel("");
+<h2>
 
-            setCategory(
-              "entertainment"
-            );
-          }}
-        >
-          Entertainment
-        </button>
-         <button
-          onClick={() => {
+{item.title}
 
-            setPage(1);
+</h2>
 
-            setSearch("");
+<p>
 
-            setChannel("");
+⭐ {item.rating}/5
 
-            setCategory(
-              "science"
-            );
-          }}
-        >
-          Science
-        </button>
-         
+</p>
 
+<p>
 
-      </div>
+{item.source?.name}
 
-      {/* NEWS CARDS */}
+</p>
 
-      <div className="cards-container">
+</div>
 
-        {filteredNews.length ===
-        0 ? (
+)
 
-          <h2>
-            No News Found
-          </h2>
+)
 
-        ) : (
+}
 
-          filteredNews.map(
-            (item, index) => (
+</div>
 
-              <Link
-                key={index}
-                to="/news-details"
-                state={item}
-                style={{
-                  textDecoration:
-                    "none",
-                  color: "inherit",
-                }}
-              >
 
-                <div className="card">
 
-                  <button
-                    className="bookmark-btn"
-                    onClick={(e) => {
+{
 
-                      e.preventDefault();
+loading &&
 
-                      e.stopPropagation();
+<h2>
 
-                      handleBookmark(
-                        item
-                      );
-                    }}
-                  >
-                    🔖
-                  </button>
+Loading...
 
-                  <img
-                    src={
-                      item.urlToImage ||
-                      "https://via.placeholder.com/300"
-                    }
-                    alt="news"
-                  />
+</h2>
 
-                  <h2>
-                    {item.title}
-                  </h2>
+}
 
-                  <p>
-                    {
-                      item.description
-                    }
-                  </p>
 
-                  <p>
-                    ⭐ Rating:
-                    {item.rating}/5
-                  </p>
 
-                  <p>
 
-                    <b>
-                      Source:
-                    </b>{" "}
 
-                    {
-                      item.source
-                        ?.name
-                    }
+</div>
 
-                  </p>
+);
 
-                </div>
-
-              </Link>
-
-            )
-          )
-        )}
-
-      </div>
-
-      {/* LOADING */}
-
-      {loading && (
-
-        <h2
-          style={{
-            textAlign:
-              "center",
-          }}
-        >
-
-          Loading News...
-
-        </h2>
-
-      )}
-    {/* FOOTER */}
-
-<footer className="footer">
-
-  <div className="footer-content">
-
-    <h3>
-      Geosphere 🌍
-    </h3>
-
-    <p>
-      Smart News & Weather
-      Aggregator Platform
-    </p>
-
-    <p>
-      Built with React • MongoDB •
-      GNews API • Weather API
-    </p>
-
-    <p className="copyright">
-
-      © 2026 Geosphere Team
-
-    </p>
-
-  </div>
-
-</footer>
-    </div>
-  );
 }
 
 export default Dashboard;

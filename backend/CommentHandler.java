@@ -37,6 +37,11 @@ implements HttpHandler {
             "Content-Type"
         );
 
+        exchange.getResponseHeaders().add(
+            "Access-Control-Allow-Methods",
+            "GET, POST, OPTIONS"
+        );
+
         if (
             exchange.getRequestMethod()
             .equalsIgnoreCase("OPTIONS")
@@ -49,6 +54,8 @@ implements HttpHandler {
 
             return;
         }
+
+        try {
 
         InputStream inputStream =
             exchange.getRequestBody();
@@ -89,18 +96,52 @@ implements HttpHandler {
         String response =
             "{\"message\":\"Comment Saved\"}";
 
+        exchange.getResponseHeaders().add(
+            "Content-Type",
+            "application/json"
+        );
+
+        byte[] responseBytes =
+            response.getBytes();
+
         exchange.sendResponseHeaders(
             200,
-            response.length()
+            responseBytes.length
         );
 
         OutputStream output =
             exchange.getResponseBody();
 
         output.write(
-            response.getBytes()
+            responseBytes
         );
 
         output.close();
+
+        } catch (Exception e) {
+
+            String error =
+                "{\"message\":\"Server error: " +
+                e.getMessage() + "\"}";
+
+            exchange.getResponseHeaders().add(
+                "Content-Type",
+                "application/json"
+            );
+
+            byte[] errorBytes = error.getBytes();
+
+            exchange.sendResponseHeaders(
+                500,
+                errorBytes.length
+            );
+
+            OutputStream os =
+                exchange.getResponseBody();
+
+            os.write(errorBytes);
+
+            os.close();
+        }
     }
 }

@@ -1,192 +1,400 @@
-import React, { useState } from "react";
-import { useLocation, Link } from "react-router-dom";
+import React,{useState, useEffect} from "react";
+import {useLocation,Link} from "react-router-dom";
 import "./NewsDetails.css";
 
-function NewsDetails() {
+function NewsDetails(){
 
-  const location = useLocation();
+const location=useLocation();
 
-  const article = location.state;
+const article=location.state;
 
-  const [comment, setComment] = useState("");
+const [comment,setComment]=useState("");
 
-  const [comments, setComments] = useState([]);
+const [comments,setComments]=useState([]);
 
+<<<<<<< HEAD
   // ADD COMMENT
   const handleComment = async () => {
+=======
+const [commentMessage,setCommentMessage]=
+useState("");
+>>>>>>> 662027fcf33a188be747ee8d039a5377520c7cb5
 
-  if (
-    comment.trim() === ""
-  ) {
+const [showSummary,setShowSummary]=
+useState(false);
 
-    return;
-  }
+const [summary,setSummary]=
+useState([]);
 
-  try {
 
+<<<<<<< HEAD
     const response =
       await fetch(
         "http://localhost:8000/comment",
         {
           method: "POST",
+=======
+/* COMMENT */
+>>>>>>> 662027fcf33a188be747ee8d039a5377520c7cb5
 
-          headers: {
-            "Content-Type":
-              "application/json",
-          },
+const handleComment=()=>{
 
-          body: JSON.stringify({
-            newsTitle:
-              article.title,
+if(comment.trim()==="") return;
 
-            comment:
-              comment,
-          }),
-        }
-      );
+setComments([
 
-    const data =
-      await response.json();
+...comments,
 
-    alert(data.message);
+comment
 
-    setComments([
-      ...comments,
-      comment,
-    ]);
+]);
 
-    setComment("");
+setComment("");
 
-  } catch (error) {
+setCommentMessage(
 
-    console.log(error);
-  }
+"✅ Thank you for commenting!"
+
+);
+
+setTimeout(()=>{
+
+setCommentMessage("");
+
+},3000);
+
+};
+const [isDarkMode,setIsDarkMode]=
+useState(false);
+
+
+useEffect(()=>{
+
+setIsDarkMode(
+
+localStorage.getItem(
+"theme"
+)==="dark"
+
+);
+
+},[]);
+
+
+/* GENERATE SUMMARY */
+
+const generateSummary=()=>{
+
+if(showSummary){
+
+setShowSummary(false);
+
+return;
+
+}
+
+const text=
+
+article.description ||
+article.content ||
+article.title ||
+"No summary available";
+
+
+const words=text.split(" ");
+
+
+const points=[
+
+words.slice(0,12).join(" "),
+
+words.slice(12,24).join(" "),
+
+words.slice(24,36).join(" ")
+
+].filter(
+item=>item!==""
+);
+
+
+setSummary(points);
+
+setShowSummary(true);
+
 };
 
-  // IF NO ARTICLE
-  if (!article) {
 
-    return (
 
-      <div className="details-page">
+if(!article){
 
-        <h2>No News Found</h2>
+return(
 
-        <Link to="/dashboard">
-          Go Back
-        </Link>
+<div className={`details-page ${isDarkMode ? "dark-mode" : "light-mode"}`}>
 
-      </div>
-    );
-  }
+<h2>
 
-  return (
+No News Found
 
-    <div className="details-page">
+</h2>
 
-      {/* BACK BUTTON */}
+<Link
+to="/dashboard"
+>
 
-      <Link
-        to="/dashboard"
-        className="back-btn"
-      >
-        ← Back
-      </Link>
+Go Back
 
-      {/* TITLE */}
+</Link>
 
-      <h1>
-        {article.title}
-      </h1>
+</div>
 
-      {/* IMAGE */}
+);
 
-      <img
-        src={
-          article.urlToImage ||
-          "https://via.placeholder.com/600x300"
-        }
-        alt="news"
-        className="details-image"
-      />
+}
 
-      {/* SOURCE */}
 
-      <p>
-        <b>Source:</b>{" "}
-        {article.source?.name}
-      </p>
+return(
 
-      {/* DESCRIPTION */}
+<div className={`details-page ${
+isDarkMode
+?
+"dark-mode"
+:
+"light-mode"
+}`}>
 
-      <p className="description">
 
-        {article.description}
+<Link
+to="/dashboard"
+className="back-btn"
+>
 
-      </p>
+← Back
 
-      {/* FULL NEWS */}
+</Link>
 
-      <a
-        href={article.url}
-        target="_blank"
-        rel="noreferrer"
-        className="read-more"
-      >
 
-        Read Complete Article
+{/* TITLE + SUMMARY */}
 
-      </a>
+<div className="title-row">
 
-      {/* COMMENTS */}
+<h1>
 
-      <div className="comments-section">
+{article.title}
 
-        <h2>
-          Comments
-        </h2>
+</h1>
 
-        <textarea
-          placeholder="Write a comment..."
-          value={comment}
-          onChange={(e) =>
-            setComment(
-              e.target.value
-            )
-          }
-        />
+<button
+className="summary-btn"
+onClick={generateSummary}
+>
 
-        <button
-          onClick={handleComment}
-        >
-          Add Comment
-        </button>
+{
 
-        {/* COMMENT LIST */}
+showSummary
 
-        <div className="comment-list">
+?
 
-          {comments.map(
-            (item, index) => (
+"❌ Hide Summary"
 
-              <div
-                key={index}
-                className="comment"
-              >
+:
 
-                {item}
+"✨ Generate Summary"
 
-              </div>
+}
 
-            )
-          )}
+</button>
 
-        </div>
+</div>
 
-      </div>
 
-    </div>
-  );
+{/* IMAGE */}
+
+<img
+
+src={
+
+article.image ||
+
+"https://images.unsplash.com/photo-1504711434969-e33886168f5c?q=80&w=1000"
+
+}
+
+alt="news"
+
+className="details-image"
+
+onError={(e)=>{
+
+e.target.src=
+
+"https://images.unsplash.com/photo-1504711434969-e33886168f5c?q=80&w=1000";
+
+}}
+
+/>
+
+
+{/* SUMMARY */}
+
+{
+
+showSummary && (
+
+<div className="summary-box">
+
+<h3>
+
+📰 Article Summary
+
+</h3>
+
+<ul>
+
+{
+
+summary.map(
+
+(item,index)=>(
+
+<li
+key={index}
+>
+
+{item}
+
+</li>
+
+)
+
+)
+
+}
+
+</ul>
+
+</div>
+
+)
+
+}
+
+
+<p className="source">
+
+Source:
+{" "}
+{article.source?.name}
+
+</p>
+
+
+<p className="description">
+
+{
+
+article.description ||
+article.content
+
+}
+
+</p>
+
+
+<a
+
+href={article.url}
+
+target="_blank"
+
+rel="noreferrer"
+
+className="read-more"
+
+>
+
+Read Complete Article
+
+</a>
+
+
+{/* COMMENTS */}
+
+<div className="comments-section">
+
+<h2>
+
+Comments
+
+</h2>
+
+<textarea
+
+placeholder="Write a comment..."
+
+value={comment}
+
+onChange={(e)=>
+
+setComment(
+e.target.value
+)
+
+}
+
+/>
+
+
+<button
+onClick={handleComment}
+>
+
+Add Comment
+
+</button>
+
+
+{
+
+commentMessage && (
+
+<p className="comment-success">
+
+{commentMessage}
+
+</p>
+
+)
+
+}
+
+
+{
+
+comments.map(
+
+(item,index)=>(
+
+<div
+key={index}
+className="comment"
+>
+
+{item}
+
+</div>
+
+)
+
+)
+
+}
+
+</div>
+
+</div>
+
+);
+
 }
 
 export default NewsDetails;

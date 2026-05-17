@@ -12,13 +12,10 @@ const [comment,setComment]=useState("");
 
 const [comments,setComments]=useState([]);
 
-<<<<<<< HEAD
-  // ADD COMMENT
   const handleComment = async () => {
-=======
 const [commentMessage,setCommentMessage]=
 useState("");
->>>>>>> 662027fcf33a188be747ee8d039a5377520c7cb5
+
 
 const [showSummary,setShowSummary]=
 useState(false);
@@ -27,15 +24,15 @@ const [summary,setSummary]=
 useState([]);
 
 
-<<<<<<< HEAD
+
     const response =
       await fetch(
         "http://localhost:8000/comment",
         {
           method: "POST",
-=======
+
 /* COMMENT */
->>>>>>> 662027fcf33a188be747ee8d039a5377520c7cb5
+
 
 const handleComment=()=>{
 

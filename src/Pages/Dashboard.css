@@ -336,8 +336,7 @@ margin:8px 0;
     0.2
   );
 
-<<<<<<< HEAD
-=======
+
 display:flex;
 
 flex-direction:column;
@@ -351,7 +350,6 @@ box-shadow:
 0,
 0.1
 );
->>>>>>> 662027fcf33a188be747ee8d039a5377520c7cb5
 }
 
 
@@ -380,12 +378,9 @@ box-shadow:
 
   border-radius: 10px;
 
-<<<<<<< HEAD
-=======
 object-fit:cover;
 
 display:block;
->>>>>>> 662027fcf33a188be747ee8d039a5377520c7cb5
 }
 
 
@@ -395,12 +390,12 @@ display:block;
 
   margin-top: 10px;
 
-<<<<<<< HEAD
-=======
+
+
 font-size:18px;
 
 margin-bottom:8px;
->>>>>>> 662027fcf33a188be747ee8d039a5377520c7cb5
+
 }
 
 
@@ -551,8 +546,7 @@ width:100%;
 
 }
 
-<<<<<<< HEAD
-=======
+
 .search-section button{
 
 width:100%;
@@ -826,5 +820,4 @@ color:white;
 .weather-info{
 
 margin-top:15px;
->>>>>>> 662027fcf33a188be747ee8d039a5377520c7cb5
 }

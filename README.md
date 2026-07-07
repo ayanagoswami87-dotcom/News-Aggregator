@@ -24,7 +24,7 @@ The goal of GEOSPHERE is to build a responsive full-stack news platform that dem
 -  User Personalization
 -  Dark Mode
 -  Bookmark Articles
--  Weather Forecast
+-  Weather Forecast based on location 
 -  Multi-language Support
 -  Trending News
 -  Voice Search

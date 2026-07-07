@@ -7,7 +7,7 @@ A full-stack news aggregation web application built using **React**, **Vite**, *
 
 GEOSPHERE is a modern news aggregation platform designed to provide users with a personalized and interactive news reading experience. The application enables users to create accounts, log in securely, browse news across multiple categories, search for articles, personalize their news feed, and engage through comments.
 
-The frontend is developed using **React** and **Vite**, while the backend is powered by **Java HttpServer**. User data and application information are securely stored in **MongoDB**.
+The frontend is developed using **React** and **Vite**, while the backend is powered by **Java HttpServer**. User data and application information are securely stored in **MongoDB**. **REST API** is also used to fetch news and weather updates.
 
 ## 🎯 Objective
 
@@ -48,6 +48,7 @@ The goal of GEOSPHERE is to build a responsive full-stack news platform that dem
 ## Backend
 - Java
 - Java HttpServer
+- REST API
 - MongoDB Java Driver
 
 ## Database

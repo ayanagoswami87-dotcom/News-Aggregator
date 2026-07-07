@@ -1,16 +1,67 @@
-# React + Vite
+# 🌍 GEOSPHERE – News Aggregator
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A full-stack news aggregation web application built using **React**, **Vite**, **Java HttpServer**, and **MongoDB**.
 
-Currently, two official plugins are available:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## 📖 Description
 
-## React Compiler
+GEOSPHERE is a modern news aggregation platform designed to provide users with a personalized and interactive news reading experience. The application enables users to create accounts, log in securely, browse news across multiple categories, search for articles, personalize their news feed, and engage through comments.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+The frontend is developed using **React** and **Vite**, while the backend is powered by **Java HttpServer**. User data and application information are securely stored in **MongoDB**.
 
-## Expanding the ESLint configuration
+## 🎯 Objective
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+The goal of GEOSPHERE is to build a responsive full-stack news platform that demonstrates frontend development with React and backend development using Java, while integrating MongoDB for data management.
+
+
+# ✨ Features
+
+-  User Authentication
+-  Personalized News Feed
+-  News Categories
+-  Search News
+-  Comment System
+-  User Personalization
+-  Dark Mode
+-  Bookmark Articles
+-  Weather Forecast
+-  Multi-language Support
+-  Trending News
+-  Voice Search
+-  News Summary 
+-  Filter Channels 
+-  Responsive Design
+
+---
+
+# 🛠 Tech Stack
+
+## Frontend
+
+- React
+- Vite
+- JavaScript
+- HTML
+- CSS
+- React Router
+
+## Backend
+- Java
+- Java HttpServer
+- MongoDB Java Driver
+
+## Database
+
+- MongoDB
+
+# 🚀 Future Enhancements
+
+-  AI-Powered News Recommendations
+-  Regional Language Support
+-  Push Notifications
+- Reading History
+- Offline Reading
+  
+## License
+
+This project is developed for educational purposes.
